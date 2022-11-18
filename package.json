@@ -11,25 +11,31 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
-  "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
-  },
+  "homepage": "https://github.com/rohanshiva/ppalms",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/rohanshiva/ppalms.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Group 28",
+    "url": "https://github.com/rohanshiva/ppalms.git"
   },
   "contributors": [
     {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
+      "name": "rohan shiva",
+      "email": "shiva056@umn.edu",
+      "url": "https://github.com/rohanshiva"
+    },
+    {
+      "name": "ramki pitchala",
+      "email": "pitch034@umn.edu",
+      "url": "https://github.com/ramko9999"
+    },
+    {
+      "name": "tanush nadimpalli",
+      "email": "nadim011@umn.edu",
+      "url": "https://github.com/TanushN"
     }
   ],
   "main": "./src/main/main.ts",
