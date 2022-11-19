@@ -10,9 +10,28 @@ body {
   background-color: var(--bg);
   color: var(--primary);
   font-family: 'Space Grotesk', sans-serif;
+  padding: 2rem 2rem;
 }
 
-h1 {
-  color: var(--accent);
+button {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  background-color: var(--accent);
+  color: var(--primary);
+  border-radius: 0.4rem;
 }
 
+input[type=file]::file-selector-button {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  background-color: var(--accent);
+  color: var(--primary);
+  border-radius: 0.4rem;
+}
+
+.file-picker-btns {
+  display: flex;
+  flex-direction: row;
+}
