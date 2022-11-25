@@ -105,7 +105,7 @@ const Editor = (props: any) => {
         }}
       </Highlight>
       <div className="editor-bottom-btns-container">
-        <Link to="/">
+        <Link to="/form">
           <button>Next</button>
         </Link>
       </div>
