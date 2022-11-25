@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useNavigate } from "react-router-dom";
 
 const supportedExtensions = [
   '.js',
@@ -14,12 +15,15 @@ const supportedExtensions = [
   '.cpp',
 ];
 
+
+
 const getFileExtension = (filename: string) => {
   return filename.split('.')[1];
 };
 
 function FilePicker() {
   const [pickedFile, setPickedFile] = useState<any>();
+  const navigate = useNavigate();
 
   const pickHandler = (event: any) => {
     setPickedFile(event.target.files[0]);
@@ -30,12 +34,14 @@ function FilePicker() {
       toast.error('Please select a file before moving onto the next step.');
       return;
     }
-    if (!supportedExtensions.includes(getFileExtension(pickedFile.name))) {
+    if (!supportedExtensions.includes('.' + getFileExtension(pickedFile.name))) {
       toast.error(
-        'Invalid file. Please select a file with these extensions: .js, .jsx, .ts, .tsx, .go, .py, .java, .html, .c, .cpp'
+        'Invalid file. Please select a file with these extensions: ' + supportedExtensions.join(", ")
       );
+      return;
     }
     // TODO validate file
+    navigate("/form");
   };
 
   return (
