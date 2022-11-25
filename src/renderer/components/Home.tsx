@@ -1,12 +1,17 @@
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const Home = () => {
+  const history = useHistory();
   return (
     <div>
       <h1> PPALMS Generator</h1>
-      <Link to="/generate">
-        <button>Generate</button>
-      </Link>
+      <button
+        onClick={(e) => {
+          history.replace('/generate');
+        }}
+      >
+        Generate
+      </button>
     </div>
   );
 };
