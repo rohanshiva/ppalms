@@ -4,7 +4,7 @@ const Home = () => {
   const history = useHistory();
   return (
     <div>
-      <h1> PPALMS Generator</h1>
+      <h1 data-testid="title">PPALMS Generator</h1>
       <button
         onClick={(e) => {
           history.replace('/generate');
