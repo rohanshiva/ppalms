@@ -11,28 +11,42 @@ import {
 import './Editor.css';
 import Highlight, { defaultProps } from 'prism-react-renderer';
 import theme from 'prism-react-renderer/themes/github';
-import { Link } from 'react-router-dom';
-
-export interface LineTuple {
-  start: number;
-  end: number;
-}
+import { Link, useHistory } from 'react-router-dom';
+import { LineTuple } from '../../interface';
 
 const Editor = (props: any) => {
   const [lineTuples, setLineTuples] = useState<LineTuple[]>([]);
   const [lineTupleStart, setLineTupleStart] = useState<number | null>(null);
+  const history = useHistory();
+
+  const code = props.location.state.code;
+
+  const isPartOfLineTuple = (i: number) => {
+    return (
+      lineTuples.filter(({ start, end }) => i >= start && i <= end).length > 0
+    );
+  };
+
+  const isPreHighlightToggled = (i: number) => {
+    return lineTupleStart === i;
+  };
+
   const handleLineClick = (e: any, i: number) => {
-    for (const { start, end } of lineTuples) {
-      if (i >= start && i <= end) {
-        return;
-      }
+    if (isPartOfLineTuple(i)) {
+      return;
     }
 
-    if (!lineTupleStart) {
+    if (lineTupleStart == null) {
       setLineTupleStart(i);
     } else {
       if (e.shiftKey) {
-        setLineTuples((lt) => [...lt, { start: lineTupleStart, end: i }]);
+        setLineTuples((lt) => [
+          ...lt,
+          {
+            start: Math.min(lineTupleStart, i),
+            end: Math.max(i, lineTupleStart),
+          },
+        ]);
         setLineTupleStart(null);
       } else {
         setLineTupleStart(i);
@@ -40,21 +54,48 @@ const Editor = (props: any) => {
     }
   };
 
-  const isHighlighted = (i: number) => {
-    return (
-      lineTuples.filter(({ start, end }) => i >= start && i <= end).length >
-        0 || lineTupleStart === i
-    );
+  const isStart = (i: number) => {
+    return lineTuples.filter(({ start, end }) => i === start).length > 0;
   };
 
-  const isStart = (i: number) => {
-    return (
-      lineTupleStart === i ||
-      lineTuples.filter(({ start, end }) => i === start).length > 0
-    );
-  };
   const handleRemove = (e: any, i: number) => {
     setLineTuples((lt) => [...lt.filter(({ start, end }) => i !== start)]);
+  };
+
+  const getLineClass = (i: number) => {
+    if (isPartOfLineTuple(i)) {
+      return 'highlighted';
+    } else if (isPreHighlightToggled(i)) {
+      return 'prehighlight-selection';
+    }
+    return '';
+  };
+
+  const onHighlightFinish = (e: any) => {
+    const codeLines = code.split('\n');
+    let filteredCodeLines: string[] = [];
+    let lineTuplesForFilteredCode: LineTuple[] = [];
+
+    lineTuples.sort((a: LineTuple, b: LineTuple) => {
+      return a.start - b.start;
+    });
+
+    let newTupleStart = 0;
+    lineTuples.forEach(({ start, end }) => {
+      const length = end - start;
+      for (let i = start; i <= end; i++) {
+        filteredCodeLines.push(codeLines[i]);
+      }
+
+      const newTupleEnd = newTupleStart + length
+      lineTuplesForFilteredCode.push({
+        start: newTupleStart,
+        end: newTupleEnd,
+      });
+      newTupleStart = newTupleEnd + 1;
+    });
+
+    history.replace("/form", {codeLines: filteredCodeLines, lineTuples: lineTuplesForFilteredCode})
   };
 
   return (
@@ -62,18 +103,11 @@ const Editor = (props: any) => {
       <Link to="/">
         <button>🏠</button>
       </Link>
-      <h3>
-        Please select lines to generate problems. 
-      </h3>
+      <h3>Please select lines to generate problems.</h3>
       <div>
         Use <kbd>(shift+select)</kbd> to select line tuples.
       </div>
-      <Highlight
-        {...defaultProps}
-        theme={theme}
-        code={props.location.state.code}
-        language="jsx"
-      >
+      <Highlight {...defaultProps} theme={theme} code={code} language="jsx">
         {({ className, style, tokens, getLineProps, getTokenProps }) => {
           return (
             <Pre className={className} style={style}>
@@ -91,9 +125,7 @@ const Editor = (props: any) => {
                       {i + 1}
                     </LineNo>
                   </LineNoDiv>
-                  <LineContent
-                    className={isHighlighted(i) ? 'highlighted' : ''}
-                  >
+                  <LineContent className={getLineClass(i)}>
                     {line.map((token, key) => (
                       <span key={key} {...getTokenProps({ token, key })} />
                     ))}
@@ -105,9 +137,7 @@ const Editor = (props: any) => {
         }}
       </Highlight>
       <div className="editor-bottom-btns-container">
-        <Link to="/form">
-          <button>Next</button>
-        </Link>
+          <button onClick={onHighlightFinish}>Next</button>
       </div>
     </>
   );

@@ -1,26 +1,43 @@
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { ProblemSetGenerator } from '../../api/ProblemSetGenerator';
+import { ProblemType } from 'interface';
 
 const Padder = (props: any) => {
   return <div style={{ paddingBottom: props.paddingBottom }}></div>;
 };
 
-const GenerationForm = () => {
+const GenerationForm = (props: any) => {
   const [isReordering, setIsReordering] = useState(false);
   const [isMultipleChoice, setIsMultipleChoice] = useState(false);
-  const [numberOfProblems, setNumberOfProblems] = useState<number | undefined>(
-    undefined
-  );
+  const [numberOfProblems, setNumberOfProblems] = useState<number>(10);
   const [problemSetName, setProblemSetName] = useState('');
+  const { codeLines, lineTuples } = props.location.state;
+
+  const getSelectedProblemTypes = () => {
+    let problemTypes: ProblemType[] = [];
+    if (isReordering) {
+      problemTypes.push(ProblemType.REORDER);
+    }
+    if (isMultipleChoice) {
+      problemTypes.push(ProblemType.MULTIPLE_CHOICE);
+    }
+    return problemTypes;
+  };
 
   const formHandler = (event: any) => {
-        if(!isReordering && !isMultipleChoice){
-            toast.error(
-                "At least one type of problem must be chosen."
-            );
-        }
-        event.preventDefault();
+    if (!isReordering && !isMultipleChoice) {
+      toast.error('At least one type of problem must be chosen.');
+    }
+    event.preventDefault();
+    const problemSet = ProblemSetGenerator.generate(
+      getSelectedProblemTypes(),
+      codeLines.join("\n"),
+      lineTuples,
+      numberOfProblems,
+      problemSetName
+    );
+    console.log(problemSet);
   };
 
   return (
@@ -63,7 +80,7 @@ const GenerationForm = () => {
         />
         <Padder paddingBottom={'20px'} />
 
-        <label>what do you want to name your problem set?</label>
+        <label>What do you want to name your problem set?</label>
         <Padder paddingBottom={'10px'} />
         <input
           required
@@ -72,8 +89,8 @@ const GenerationForm = () => {
           value={problemSetName}
           onChange={(event) => setProblemSetName(event.target.value)}
         />
-        <Padder paddingBottom={"20px"}/>
-        <button type='submit'>Generate</button>
+        <Padder paddingBottom={'20px'} />
+        <button type="submit">Generate</button>
       </form>
     </div>
   );
