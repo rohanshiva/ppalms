@@ -2,15 +2,17 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { ProblemSetGenerator } from '../../api/ProblemSetGenerator';
 import { ProblemType } from 'interface';
+import { Link, useHistory } from 'react-router-dom';
 
 const Padder = (props: any) => {
   return <div style={{ paddingBottom: props.paddingBottom }}></div>;
 };
 
 const GenerationForm = (props: any) => {
+  const history = useHistory();
   const [isReordering, setIsReordering] = useState(false);
   const [isMultipleChoice, setIsMultipleChoice] = useState(false);
-  const [numberOfProblems, setNumberOfProblems] = useState<number>(10);
+  const [numberOfProblems, setNumberOfProblems] = useState<number>(2);
   const [problemSetName, setProblemSetName] = useState('');
   const { codeLines, lineTuples } = props.location.state;
 
@@ -32,16 +34,21 @@ const GenerationForm = (props: any) => {
     event.preventDefault();
     const problemSet = ProblemSetGenerator.generate(
       getSelectedProblemTypes(),
-      codeLines.join("\n"),
+      codeLines.join('\n'),
       lineTuples,
       numberOfProblems,
       problemSetName
     );
-    console.log(problemSet);
+    history.replace('/result', { problemSet });
   };
 
   return (
     <div>
+      <Link to="/">
+        <button>
+          🏠
+        </button>
+      </Link>
       <h1> Generation Form</h1>
       <form onSubmit={formHandler}>
         <label>What types of problems would you like to generate?</label>

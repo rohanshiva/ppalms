@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono&display=swap');
 
 :root {
-  --bg: black;
-  --primary: white;
-  --accent: #01A5E9;
+  --bg: #FFFFFF;
+  --primary: #4F566B;
+  --accent: #7CBFE6;
 }
 
 body {
@@ -14,24 +14,40 @@ body {
 }
 
 button {
+  border: none;
   font-size: 18px;
   font-weight: bold;
   padding: 0.5rem 1rem;
   background-color: var(--accent);
-  color: var(--primary);
+  color: #F6FAFD;
   border-radius: 0.4rem;
 }
 
 input[type=file]::file-selector-button {
+  border: none;
   font-size: 18px;
   font-weight: bold;
   padding: 0.5rem 1rem;
   background-color: var(--accent);
-  color: var(--primary);
+  color: #F6FAFD;
   border-radius: 0.4rem;
 }
 
 .file-picker-btns {
   display: flex;
   flex-direction: row;
+}
+
+code, pre {
+  font-size: 12px;
+  white-space: pre-wrap;
+  font-family: 'Space Mono', monospace;
+}
+
+.question-tag {
+  color: #7CBFE6
+}
+
+.question-type-tag {
+  color: #556CD6;
 }
