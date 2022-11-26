@@ -18,19 +18,19 @@ import toast from 'react-hot-toast';
 const Editor = (props: any) => {
   const [lineTuples, setLineTuples] = useState<LineTuple[]>([]);
   const [lineTupleStart, setLineTupleStart] = useState<number | null>(null);
-  const [code, setCode] = useState<String>("");
+  const [code, setCode] = useState<string>('');
   const history = useHistory();
 
   useEffect(() => {
-    if(props.location.state.code){
+    if (props.location.state.code) {
       setCode(props.location.state.code);
     }
 
-    if(props.location.state.prevProps){
+    if (props.location.state.prevProps) {
       setCode(props.location.state.prevProps.code);
     }
 
-    if(props.location.state && props.location.state.prevState){
+    if (props.location.state && props.location.state.prevState) {
       let lineTuples = props.location.state.prevState.lineTuples;
       let lineTupleStart = props.location.state.prevState.lineTupleStart;
 
@@ -90,8 +90,7 @@ const Editor = (props: any) => {
   };
 
   const onHighlightFinish = (e: any) => {
-
-    if(lineTuples.length == 0){
+    if (lineTuples.length == 0) {
       toast.error('Please select some lines before proceeding.');
       return;
     }
@@ -114,7 +113,7 @@ const Editor = (props: any) => {
         filteredCodeLines.push(codeLines[i]);
       }
 
-      const newTupleEnd = newTupleStart + length
+      const newTupleEnd = newTupleStart + length;
       lineTuplesForFilteredCode.push({
         start: newTupleStart,
         end: newTupleEnd,
@@ -122,7 +121,15 @@ const Editor = (props: any) => {
       newTupleStart = newTupleEnd + 1;
     });
 
-    history.replace("/form", {codeLines: filteredCodeLines, lineTuples: lineTuplesForFilteredCode, editorState: {lineTuples: prevlineTuples, lineTupleStart: prevLineTupleStart}, editorProps:{code: code}})
+    history.replace('/form', {
+      codeLines: filteredCodeLines,
+      lineTuples: lineTuplesForFilteredCode,
+      editorState: {
+        lineTuples: prevlineTuples,
+        lineTupleStart: prevLineTupleStart,
+      },
+      editorProps: { code: code },
+    });
   };
 
   return (
@@ -131,7 +138,16 @@ const Editor = (props: any) => {
         <Link to="/">
           <button>🏠</button>
         </Link>
-        <button style={{"marginLeft" : "1rem"}}onClick={() => history.replace("/generate", {prevState: props.location.state.filePickerState})}>👈🏿</button>
+        <button
+          style={{ marginLeft: '1rem' }}
+          onClick={() =>
+            history.replace('/generate', {
+              prevState: props.location.state.filePickerState,
+            })
+          }
+        >
+          👈🏿
+        </button>
       </div>
       <h3>Please select lines to generate problems.</h3>
       <div>
@@ -167,7 +183,7 @@ const Editor = (props: any) => {
         }}
       </Highlight>
       <div className="editor-bottom-btns-container">
-          <button onClick={onHighlightFinish}>Next</button>
+        <button onClick={onHighlightFinish}>Next</button>
       </div>
     </>
   );

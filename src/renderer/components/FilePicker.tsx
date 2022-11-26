@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -21,7 +21,6 @@ const getFileExtension = (filename: string) => {
 };
 
 function FilePicker(props: any) {
-
   const history = useHistory();
   const [pickedFile, setPickedFile] = useState<any>();
 
@@ -30,10 +29,10 @@ function FilePicker(props: any) {
   };
 
   useEffect(() => {
-      if(props.location.state && props.location.state.prevState){
-        let pickedFile = props.location.state.prevState.pickedFile;
-        setPickedFile(pickedFile);
-      }
+    if (props.location.state && props.location.state.prevState) {
+      let pickedFile = props.location.state.prevState.pickedFile;
+      setPickedFile(pickedFile);
+    }
   }, []);
 
   const validateFile = () => {
@@ -50,7 +49,10 @@ function FilePicker(props: any) {
     }
     const reader = new FileReader();
     reader.addEventListener('load', (event) => {
-      history.replace('/select-lines', {code: event.target?.result, filePickerState: {pickedFile: pickedFile}});
+      history.replace('/select-lines', {
+        code: event.target?.result,
+        filePickerState: { pickedFile: pickedFile },
+      });
     });
     reader.readAsText(pickedFile);
   };

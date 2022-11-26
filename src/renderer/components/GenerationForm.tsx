@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { ProblemSetGenerator } from '../../api/ProblemSetGenerator';
 import { ProblemType } from 'interface';
@@ -46,11 +46,19 @@ const GenerationForm = (props: any) => {
   return (
     <div>
       <Link to="/">
-        <button>
-          🏠
-        </button>
+        <button>🏠</button>
       </Link>
-      <button style={{"marginLeft" : "1rem"}} onClick={() => history.replace('/select-lines', {"prevState" : props.location.state.editorState, "prevProps": props.location.state.editorProps})}>👈🏿</button>
+      <button
+        style={{ marginLeft: '1rem' }}
+        onClick={() =>
+          history.replace('/select-lines', {
+            prevState: props.location.state.editorState,
+            prevProps: props.location.state.editorProps,
+          })
+        }
+      >
+        👈🏿
+      </button>
       <h1> Generation Form</h1>
       <form onSubmit={formHandler}>
         <label>What types of problems would you like to generate?</label>
