@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import toast from 'react-hot-toast';
 import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const supportedExtensions = [
   '.js',
@@ -19,7 +20,7 @@ const getFileExtension = (filename: string) => {
   return `.${filename.split('.')[1]}`;
 };
 
-function FilePicker() {
+function FilePicker(props: any) {
 
   const history = useHistory();
   const [pickedFile, setPickedFile] = useState<any>();
@@ -27,6 +28,13 @@ function FilePicker() {
   const pickHandler = (event: any) => {
     setPickedFile(event.target.files[0]);
   };
+
+  useEffect(() => {
+      if(props.location.state && props.location.state.prevState){
+        let pickedFile = props.location.state.prevState.pickedFile;
+        setPickedFile(pickedFile);
+      }
+  }, []);
 
   const validateFile = () => {
     if (!pickedFile) {
@@ -42,14 +50,17 @@ function FilePicker() {
     }
     const reader = new FileReader();
     reader.addEventListener('load', (event) => {
-      console.log(event.target?.result);
-      history.replace('/select-lines', {code: event.target?.result});
+      history.replace('/select-lines', {code: event.target?.result, filePickerState: {pickedFile: pickedFile}});
     });
     reader.readAsText(pickedFile);
   };
 
   return (
     <>
+      <Link to="/">
+        <button>👈🏿</button>
+      </Link>
+      <h1>Generate</h1>
       <h2>Pick a file to generate PPALMS problems</h2>
       <div className="file-picker-btns">
         <input

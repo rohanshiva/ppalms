@@ -62,7 +62,7 @@ export const toastWithId = (style: any, id: string) => {
   return { ...style, id };
 };
 function Toast() {
-  return <Toaster position="bottom-right" reverseOrder={true} />;
+  return <Toaster position="top-right" reverseOrder={true} />;
 }
 
 export default Toast;

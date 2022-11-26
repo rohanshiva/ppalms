@@ -22,15 +22,6 @@ const questionTypeTag = (type: ProblemType) => {
 
 const GenerationResult = (props: any) => {
   const { problemSet } = props.location.state;
-  console.log(
-    problemSet.problems.map((problem: Problem, i: number) => {
-      return (
-        <>
-          <div>{JSON.stringify(problem)}</div>
-        </>
-      );
-    })
-  );
   return (
     <>
       <Link to="/">
