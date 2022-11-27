@@ -3,18 +3,16 @@ import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import GenerationForm from 'renderer/components/GenerationForm';
 
-import {Router} from 'react-router-dom';
-import {createMemoryHistory} from 'history';
-import { doesNotMatch } from 'assert';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 
-import {toast} from 'react-hot-toast';
-import exp from 'constants';
+import { toast } from 'react-hot-toast';
 
 jest.mock('react-hot-toast', () => ({
-    toast: {
-      success: jest.fn(),
-      error: jest.fn(),
-    },
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
 }));
 
 describe('GenerationForm', () => {
@@ -35,12 +33,13 @@ describe('GenerationForm', () => {
       },
     };
 
-    const history = createMemoryHistory()
+    const history = createMemoryHistory();
 
-
-    render(  <Router history={history}>
-        <GenerationForm {...props}/>
-    </Router>);
+    render(
+      <Router history={history}>
+        <GenerationForm {...props} />
+      </Router>
+    );
 
     const numberOfProblemsField = screen.getByTestId(
       'problems-field'
@@ -54,18 +53,19 @@ describe('GenerationForm', () => {
     expect(numberOfProblemsField).toBeInvalid();
     expect(problemSetNameField).toBeInvalid();
 
-
     // inflate the number of problems field and problem set name field with valid values
     await userEvent.type(numberOfProblemsField, '10');
     await userEvent.type(problemSetNameField, 'Example name');
 
-
-    const reorderCheckbox = screen.getByTestId('reorder-checkbox') as HTMLInputElement;
-    const multipleChoiceCheckbox = screen.getByTestId('multiple-choice-checkbox') as HTMLInputElement;
+    const reorderCheckbox = screen.getByTestId(
+      'reorder-checkbox'
+    ) as HTMLInputElement;
+    const multipleChoiceCheckbox = screen.getByTestId(
+      'multiple-choice-checkbox'
+    ) as HTMLInputElement;
 
     const submitBttn = screen.getByTestId('submit-bttn') as HTMLInputElement;
 
-    
     await userEvent.click(submitBttn);
 
     // test to see if toast gets triggered when both reorder and mutliple choice checkboxes are not ticked and submit button is clicked
@@ -78,6 +78,5 @@ describe('GenerationForm', () => {
 
     // test to see that toast was not called again when at least checkbox was clicked
     expect(toast.error).toBeCalledTimes(1);
-    
   });
 });
