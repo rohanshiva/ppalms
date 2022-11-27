@@ -8,10 +8,9 @@ import {
   LineAction,
   LineActionDiv,
 } from './EditorStyle';
-import './Editor.css';
 import Highlight, { defaultProps } from 'prism-react-renderer';
 import theme from 'prism-react-renderer/themes/github';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { LineTuple } from '../../interface';
 import toast from 'react-hot-toast';
 
@@ -135,9 +134,13 @@ const Editor = (props: any) => {
   return (
     <>
       <div>
-        <Link to="/">
-          <button>🏠</button>
-        </Link>
+        <button
+          onClick={(e) => {
+            history.replace('/');
+          }}
+        >
+          🏠
+        </button>
         <button
           style={{ marginLeft: '1rem' }}
           onClick={() =>
