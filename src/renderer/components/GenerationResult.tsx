@@ -1,13 +1,5 @@
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Problem, ProblemType } from '../../interface';
-
-const formatProblems = (problems: Problem[]) => {
-  return problems.map((problem: Problem) => {
-    problem.data.answer = unescape(problem.data.answer);
-
-    return problem;
-  });
-};
 
 const questionTypeTag = (type: ProblemType) => {
   switch (type) {
@@ -21,12 +13,18 @@ const questionTypeTag = (type: ProblemType) => {
 };
 
 const GenerationResult = (props: any) => {
+  const history = useHistory();
   const { problemSet } = props.location.state;
   return (
     <>
-      <Link to="/">
-        <button>🏠</button>
-      </Link>
+      <button
+        onClick={(e) => {
+          history.replace('/');
+        }}
+      >
+        🏠
+      </button>
+
       <h1>Problem Set {problemSet.name}</h1>
       <div>
         {problemSet.problems.map((problem: Problem, i: number) => {

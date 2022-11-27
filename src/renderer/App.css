@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono&display=swap');
 
 :root {
-  --bg: #FFFFFF;
-  --primary: #4F566B;
-  --accent: #7CBFE6;
+  --bg: #ffffff;
+  --primary: #4f566b;
+  --accent: #7cbfe6;
 }
 
 body {
@@ -19,35 +19,89 @@ button {
   font-weight: bold;
   padding: 0.5rem 1rem;
   background-color: var(--accent);
-  color: #F6FAFD;
+  color: #f6fafd;
   border-radius: 0.4rem;
 }
 
-input[type=file]::file-selector-button {
+input[type='file']::file-selector-button {
   border: none;
   font-size: 18px;
   font-weight: bold;
   padding: 0.5rem 1rem;
   background-color: var(--accent);
-  color: #F6FAFD;
+  color: #f6fafd;
   border-radius: 0.4rem;
 }
 
 .file-picker-btns {
   display: flex;
   flex-direction: row;
+  gap: 1rem;
+  align-items: center;
 }
 
-code, pre {
+code,
+pre {
   font-size: 12px;
   white-space: pre-wrap;
   font-family: 'Space Mono', monospace;
 }
 
 .question-tag {
-  color: #7CBFE6
+  color: #7cbfe6;
 }
 
 .question-type-tag {
-  color: #556CD6;
+  color: #556cd6;
+}
+
+.nav-btns {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.question {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+input {
+  background-color: #f7fbfd;
+  font-size: 16px;
+  max-width: fit-content;
+  max-height: fit-content;
+  padding: 0.2rem 0.4rem;
+  outline: none;
+  border-radius: 4px;
+  border: 2px solid #e3e8ee;
+  color: var(--primary);
+}
+
+.highlighted {
+  background-color: #fff8c5;
+  border-left: solid #eed888;
+}
+
+.prehighlight-selection {
+  background-color: #48e4ff;
+  border-left: solid #63c7f5;
+}
+
+.action {
+  padding-right: 0.5rem;
+}
+
+.flex-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.editor-bottom-btns-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
