@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import {toast} from 'react-hot-toast';
 import { ProblemSetGenerator } from '../../api/ProblemSetGenerator';
 import { ProblemType } from 'interface';
 import { Link, useHistory } from 'react-router-dom';
@@ -12,7 +12,7 @@ const GenerationForm = (props: any) => {
   const history = useHistory();
   const [isReordering, setIsReordering] = useState(false);
   const [isMultipleChoice, setIsMultipleChoice] = useState(false);
-  const [numberOfProblems, setNumberOfProblems] = useState<number>(2);
+  const [numberOfProblems, setNumberOfProblems] = useState<number>(0);
   const [problemSetName, setProblemSetName] = useState('');
   const { codeLines, lineTuples } = props.location.state;
 
@@ -68,6 +68,7 @@ const GenerationForm = (props: any) => {
           <input
             style={{ paddingTop: '20px' }}
             name="isReordering"
+            data-testid= "reorder-checkbox"
             type="checkbox"
             checked={isReordering}
             onChange={() => setIsReordering(!isReordering)}
@@ -78,6 +79,7 @@ const GenerationForm = (props: any) => {
           Multiple Choice:
           <input
             name="isMultipleChoice"
+            data-testid= "multiple-choice-checkbox"
             type="checkbox"
             checked={isMultipleChoice}
             onChange={() => setIsMultipleChoice(!isMultipleChoice)}
@@ -89,8 +91,10 @@ const GenerationForm = (props: any) => {
         <input
           required
           name="numberOfProblems"
+          data-testid = "problems-field"
           type="number"
           value={numberOfProblems}
+          min={1}
           onChange={(event) =>
             setNumberOfProblems(parseInt(event.target.value))
           }
@@ -101,13 +105,14 @@ const GenerationForm = (props: any) => {
         <Padder paddingBottom={'10px'} />
         <input
           required
-          name="numberOfProblems"
+          name="problemSetName"
+          data-testid = "problemset-name-field"
           type="text"
           value={problemSetName}
           onChange={(event) => setProblemSetName(event.target.value)}
         />
         <Padder paddingBottom={'20px'} />
-        <button type="submit">Generate</button>
+        <button data-testid="submit-bttn" type="submit">Generate</button>
       </form>
     </div>
   );
