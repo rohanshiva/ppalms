@@ -4,7 +4,7 @@ import {
 } from 'api/ReorderProblemGenerator';
 import { ProblemType } from 'interface';
 
-describe('PermutationGenerator tests', () => {
+describe('PermutationGenerator', () => {
   test("negative 'size' input to PermutationGenerator", () => {
     expect(() => {
       const generator = new PermutationGenerator(-1);
@@ -25,23 +25,23 @@ describe('PermutationGenerator tests', () => {
   });
 });
 
-describe('ReorderProblemGenerator tests', () => {
-  const sourceCode = `
-    import React, { useState } from "react";
-    
-    function Example() {
-      const [count, setCount] = useState(0);
-    
-      return (
-        <div>
-          <p>You clicked {count} times</p>
-          <button onClick={() => setCount(count + 1)}>
-            Click me
-          </button>
-        </div>
-      );
-    }
-    `.trim();
+describe('ReorderProblemGenerator', () => {
+  const reactSourceCode = `
+  import React, { useState } from "react";
+
+  function Example() {
+  const [count, setCount] = useState(0);
+
+    return (
+      <div>
+        <p>You clicked {count} times</p>
+        <button onClick={() => setCount(count + 1)}>
+          Click me
+        </button>
+      </div>
+    );
+  }
+  `.trim();
 
   const smallCodeSample = `
   let x = 1;
@@ -73,31 +73,31 @@ describe('ReorderProblemGenerator tests', () => {
   };
 
   test('generates a single reorder problem', () => {
-    const problems = ReorderProblemGenerator.generate(sourceCode, 1);
+    const problems = ReorderProblemGenerator.generate(reactSourceCode, 1);
     expect(problems.length).toBe(1);
     const problem = problems[0];
     expect(problem.type).toBe(ProblemType.REORDER);
-    expect(problem.data.answer).toBe(sourceCode);
+    expect(problem.data.answer).toBe(reactSourceCode);
     expect(
       doLinesMatchInSomeArrangement(
         problem.data.question,
-        sourceCode.split('\n')
+        reactSourceCode.split('\n')
       )
     ).toBe(true);
   });
 
   test('unique reordering problems are generated', () => {
-    const problems = ReorderProblemGenerator.generate(sourceCode, 10);
+    const problems = ReorderProblemGenerator.generate(reactSourceCode, 10);
     expect(problems.length).toBe(10);
     const reorderingProblems = new Set();
     for (const problem of problems) {
       expect(problem.type).toBe(ProblemType.REORDER);
-      expect(problem.data.answer).toBe(sourceCode);
+      expect(problem.data.answer).toBe(reactSourceCode);
       reorderingProblems.add(problem.data.question.join('\n'));
       expect(
         doLinesMatchInSomeArrangement(
           problem.data.question,
-          sourceCode.split('\n')
+          reactSourceCode.split('\n')
         )
       ).toBe(true);
     }

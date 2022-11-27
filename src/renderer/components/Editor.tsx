@@ -12,7 +12,7 @@ import Highlight, { defaultProps } from 'prism-react-renderer';
 import theme from 'prism-react-renderer/themes/github';
 import { useHistory } from 'react-router-dom';
 import { LineTuple } from '../../interface';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 /**
  * Editor component is responsible for rendering the user selected code file, and providing
@@ -208,20 +208,33 @@ const Editor = (props: any) => {
           return (
             <Pre className={className} style={style}>
               {tokens.map((line, i) => (
-                <Line key={i} {...getLineProps({ line, key: i })}>
+                <Line
+                  data-testid={`${i}`}
+                  key={i}
+                  {...getLineProps({ line, key: i })}
+                >
                   <LineActionDiv>
                     {isStart(i) && (
-                      <LineAction onClick={(e) => handleRemove(e, i)}>
+                      <LineAction
+                        data-testid={`${i}-remove`}
+                        onClick={(e) => handleRemove(e, i)}
+                      >
                         ❌
                       </LineAction>
                     )}
                   </LineActionDiv>
                   <LineNoDiv>
-                    <LineNo onClick={(e) => handleLineClick(e, i)}>
+                    <LineNo
+                      data-testid={`${i}-toggle`}
+                      onClick={(e) => handleLineClick(e, i)}
+                    >
                       {i + 1}
                     </LineNo>
                   </LineNoDiv>
-                  <LineContent className={getLineClass(i)}>
+                  <LineContent
+                    data-testid={`${i}-content`}
+                    className={getLineClass(i)}
+                  >
                     {line.map((token, key) => (
                       <span key={key} {...getTokenProps({ token, key })} />
                     ))}
@@ -233,7 +246,9 @@ const Editor = (props: any) => {
         }}
       </Highlight>
       <div className="editor-bottom-btns-container">
-        <button onClick={onHighlightFinish}>Next</button>
+        <button data-testid="line-tuples-submit" onClick={onHighlightFinish}>
+          Next
+        </button>
       </div>
     </>
   );
