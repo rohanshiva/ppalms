@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import toast from 'react-hot-toast';
+import { useState, useEffect } from 'react';
+import {toast} from 'react-hot-toast';
 import { ProblemSetGenerator } from '../../api/ProblemSetGenerator';
 import { ProblemType } from 'interface';
 import { useHistory } from 'react-router-dom';
@@ -8,7 +8,7 @@ const GenerationForm = (props: any) => {
   const history = useHistory();
   const [isReordering, setIsReordering] = useState(false);
   const [isMultipleChoice, setIsMultipleChoice] = useState(false);
-  const [numberOfProblems, setNumberOfProblems] = useState<number>(2);
+  const [numberOfProblems, setNumberOfProblems] = useState<number>(0);
   const [problemSetName, setProblemSetName] = useState('');
   const { codeLines, lineTuples } = props.location.state;
 
@@ -67,7 +67,7 @@ const GenerationForm = (props: any) => {
           <label>
             Re-ordering:
             <input
-              style={{ paddingTop: '20px' }}
+              data-testid= "reorder-checkbox"
               name="isReordering"
               type="checkbox"
               checked={isReordering}
@@ -77,6 +77,7 @@ const GenerationForm = (props: any) => {
           <label>
             Multiple Choice:
             <input
+              data-testid= "multiple-choice-checkbox"
               name="isMultipleChoice"
               type="checkbox"
               checked={isMultipleChoice}
@@ -87,7 +88,9 @@ const GenerationForm = (props: any) => {
         <div className="question">
           <label>How many problems do you want to generate?</label>
           <input
+            data-testid = "problems-field"
             required
+            min={1}
             name="numberOfProblems"
             type="number"
             value={numberOfProblems}
@@ -100,13 +103,14 @@ const GenerationForm = (props: any) => {
           <label>What do you want to name your problem set?</label>
           <input
             required
+            data-testid = "problemset-name-field"
             name="numberOfProblems"
             type="text"
             value={problemSetName}
             onChange={(event) => setProblemSetName(event.target.value)}
           />
         </div>
-        <button type="submit">Generate</button>
+        <button data-testid = "submit-bttn" type="submit">Generate</button>
       </form>
     </div>
   );
