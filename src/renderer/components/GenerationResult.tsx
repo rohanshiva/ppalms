@@ -1,11 +1,11 @@
 import { useHistory } from 'react-router-dom';
 import { Problem, ProblemType } from '../../interface';
 
- /**
-   * Utility function that returns the correct 'question type' string to display based on the problem type.
-   * @param type - the {@link problemType} object to get the display string from.
-   * @returns {string} the question type string to display.
-   */
+/**
+ * Utility function that returns the correct 'question type' string to display based on the problem type.
+ * @param type - the {@link problemType} object to get the display string from.
+ * @returns {string} the question type string to display.
+ */
 const questionTypeTag = (type: ProblemType) => {
   switch (type) {
     case ProblemType.REORDER: {
@@ -37,26 +37,31 @@ const GenerationResult = (props: any) => {
         🏠
       </button>
 
-      <h1>Problem Set {problemSet.name}</h1>
-      <div>
-        {problemSet.problems.map((problem: Problem, i: number) => {
-          return (
-            <>
-              <h4 className="question-tag">
-                Question {i}{' '}
-                {
-                  <pre className="question-type-tag">
-                    {questionTypeTag(problem.type)}
-                  </pre>
-                }
-              </h4>
-              <pre>{JSON.stringify(problem.data.question, null, 2)}</pre>
-              <h4>Answer:</h4>
-              <pre>{problem.data.answer}</pre>
-            </>
-          );
-        })}
-      </div>
+      <h1 data-testid="title">Problem Set {problemSet.name}</h1>
+      {problemSet.problems.map((problem: Problem, i: number) => {
+        return (
+          <div key={i}>
+            <h4 className="question-tag">
+              Question {i}{' '}
+              {
+                <pre
+                  data-testid={`question-type-${i}`}
+                  className="question-type-tag"
+                >
+                  {questionTypeTag(problem.type)}
+                </pre>
+              }
+            </h4>
+            <pre data-testid={`question-${i}`}>
+              {JSON.stringify(problem.data.question, null, 2)}
+            </pre>
+            <h4>Answer:</h4>
+            <pre data-testid={`question-answer-${i}`}>
+              {problem.data.answer}
+            </pre>
+          </div>
+        );
+      })}
     </>
   );
 };
