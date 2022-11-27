@@ -22,7 +22,7 @@ def root_handler():
 const mockValidFileBlob = new Blob([mockValidFileContent]);
 
 describe('FilePicker', () => {
-  it('file picker', async () => {
+  test('file picker', async () => {
     const filename = 'valid_file.py';
     const fileType = 'text/x-python';
     const file = new File([mockValidFileBlob], filename, { type: fileType });
