@@ -69,7 +69,7 @@ describe('GenerationForm', () => {
 
   });
 
-  test('show error toast when the form is submitted without choosing at least one ppalm problem type.',async () => {
+  test('show error toast when the form is submitted without choosing at least one ppalm problem type to generate.',async () => {
 
     setup();
 
@@ -94,7 +94,7 @@ describe('GenerationForm', () => {
 
   });
 
-  test('Problem set generation should be successful when all the required fields have been filled and the generate button is clicked.',async () => {
+  test('Form should successfully submit and navigate to the next step when all inputs are valid.',async () => {
 
     setup();
 
