@@ -7,6 +7,11 @@ import GenerationForm from './components/GenerationForm';
 import Toast from './components/Toast';
 import GenerationResult from './components/GenerationResult';
 
+/**
+ * App is the main component that exports all the screens on different routes. 
+ * The entrypoint route is the Home component which has a button to start the generation flow.
+ * @returns the app's HTML tree
+ */
 export default function App() {
   return (
     <>
