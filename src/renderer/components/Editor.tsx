@@ -20,6 +20,7 @@ import toast from 'react-hot-toast';
  * @param props
  *  - code : the code from the user selected file to render
  *  - lineTuples : user selected lineTuples
+ *  - lineTupleStart: tracks the line that is in pre-highlight stage
  * @returns the HTML tree of the Editor component
  */
 const Editor = (props: any) => {
@@ -129,7 +130,7 @@ const Editor = (props: any) => {
   };
 
   /**
-   * Navigates user to generation configuration form
+   * Removes unselected lines and navigates the user to generation configuration form
    * @param e next button click event data
    */
   const onHighlightFinish = (e: any) => {
