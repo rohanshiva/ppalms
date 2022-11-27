@@ -71,11 +71,10 @@ describe('GenerationForm', () => {
     // test to see if toast gets triggered when both reorder and mutliple choice checkboxes are not ticked and submit button is clicked
     expect(toast.error).toBeCalledTimes(1);
 
-    //await userEvent.click(multipleChoiceCheckbox);
-    //await userEvent.click(reorderCheckbox);
+    await userEvent.click(multipleChoiceCheckbox);
+    await userEvent.click(reorderCheckbox);
 
     await userEvent.click(submitBttn);
-
 
     // test to see that toast was not called again when at least checkbox was clicked
     expect(toast.error).toBeCalledTimes(1);

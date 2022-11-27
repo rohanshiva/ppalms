@@ -109,6 +109,7 @@ const GenerationForm = (props: any) => {
           data-testid = "problemset-name-field"
           type="text"
           value={problemSetName}
+          
           onChange={(event) => setProblemSetName(event.target.value)}
         />
         <Padder paddingBottom={'20px'} />
