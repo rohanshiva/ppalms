@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 
 const supportedExtensions = [
   '.js',
@@ -29,7 +28,11 @@ function FilePicker(props: any) {
   };
 
   useEffect(() => {
-    if (props.location.state && props.location.state.prevState) {
+    if (
+      props.location !== undefined &&
+      props.location.state &&
+      props.location.state.prevState
+    ) {
       let pickedFile = props.location.state.prevState.pickedFile;
       setPickedFile(pickedFile);
     }
@@ -59,9 +62,14 @@ function FilePicker(props: any) {
 
   return (
     <>
-      <Link to="/">
-        <button>👈🏿</button>
-      </Link>
+      <button
+        onClick={() => {
+          history.replace('/');
+        }}
+      >
+        👈🏿
+      </button>
+
       <h1>Generate</h1>
       <h2>Pick a file to generate PPALMS problems</h2>
       <div className="file-picker-btns">

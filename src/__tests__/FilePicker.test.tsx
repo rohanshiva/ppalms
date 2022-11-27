@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
-import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import FilePicker from '../renderer/components/FilePicker';
 
 const mockInvalidFileContent = `
@@ -27,8 +27,10 @@ describe('FilePicker', () => {
     const fileType = 'text/x-python';
     const file = new File([mockValidFileBlob], filename, { type: fileType });
     render(<FilePicker />);
-    const filePickerButton = screen.getByTestId('file-picker-btn') as HTMLInputElement;
-    await userEvent.upload(filePickerButton, file)
+    const filePickerButton = screen.getByTestId(
+      'file-picker-btn'
+    ) as HTMLInputElement;
+    await userEvent.upload(filePickerButton, file);
     // @ts-ignore
     expect(filePickerButton.files!.length).toEqual(1);
     expect(filePickerButton.files![0].name).toEqual(filename);
