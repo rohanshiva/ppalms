@@ -53,6 +53,7 @@ function FilePicker() {
       <h2>Pick a file to generate PPALMS problems</h2>
       <div className="file-picker-btns">
         <input
+          data-testid="file-picker-btn"
           type="file"
           name="file"
           id="file"

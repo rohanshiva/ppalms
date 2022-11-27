@@ -6,7 +6,6 @@ import '@testing-library/jest-dom';
 
 import { cleanup, render, screen } from "@testing-library/react";
 import Home from "../renderer/components/Home";
-import useSocket from "./hooks/socket/UseSocket";
 import { useHistory } from "react-router-dom";
 
 
