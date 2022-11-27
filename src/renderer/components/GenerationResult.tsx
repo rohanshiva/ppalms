@@ -1,6 +1,11 @@
 import { useHistory } from 'react-router-dom';
 import { Problem, ProblemType } from '../../interface';
 
+ /**
+   * Utility function that returns the correct 'question type' string to display based on the problem type.
+   * @param type - the {@link problemType} object to get the display string from.
+   * @returns {string} the question type string to display.
+   */
 const questionTypeTag = (type: ProblemType) => {
   switch (type) {
     case ProblemType.REORDER: {
@@ -12,6 +17,13 @@ const questionTypeTag = (type: ProblemType) => {
   }
 };
 
+/**
+ * Generation Result component show all the generated problems. Displays the question, the answer and the ppalm question type
+ * for each problem.
+ * @param props
+ *  - problemSet : the generated problem set
+ * @returns {HTML} the HTML tree of the Generation Result component
+ */
 const GenerationResult = (props: any) => {
   const history = useHistory();
   const { problemSet } = props.location.state;

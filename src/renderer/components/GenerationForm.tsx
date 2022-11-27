@@ -4,6 +4,14 @@ import { ProblemSetGenerator } from '../../api/ProblemSetGenerator';
 import { ProblemType } from 'interface';
 import { useHistory } from 'react-router-dom';
 
+/**
+ * Form component to configure the generation process. Lets the user specify options such as
+ * the type of problems to generate, the max number of problems and the problem set's name.
+ * @param props
+ *  - codeLines : the filtered code lines the user selected.
+ *  - lineTuples : the line tuples for the selected code lines.
+ * @returns {HTML} the HTML tree of the Generation Form component
+ */
 const GenerationForm = (props: any) => {
   const history = useHistory();
   const [isReordering, setIsReordering] = useState(false);
@@ -12,6 +20,11 @@ const GenerationForm = (props: any) => {
   const [problemSetName, setProblemSetName] = useState('');
   const { codeLines, lineTuples } = props.location.state;
 
+   
+  /**
+   * Utility function to return the selected problem types.
+   * @returns {ProblemType[]} an array of the selected problem types.
+   */
   const getSelectedProblemTypes = () => {
     let problemTypes: ProblemType[] = [];
     if (isReordering) {
@@ -23,6 +36,13 @@ const GenerationForm = (props: any) => {
     return problemTypes;
   };
 
+  /**
+   * Handler function to validate form, gets triggered on each submit.
+   * If the form has all the required inputs, the {@link ProblemSetGenerator} is called and the problem set is generated. 
+   * Then, the user is redirected to the problem set result screen. 
+   * @param event the form submit trigger event
+   * @returns {null}
+   */
   const formHandler = (event: any) => {
     event.preventDefault();
     if (!isReordering && !isMultipleChoice) {
