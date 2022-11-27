@@ -20,6 +20,7 @@ import toast from 'react-hot-toast';
  * @param props
  *  - code : the code from the user selected file to render
  *  - lineTuples : user selected lineTuples
+ *  - lineTupleStart: tracks the line that is in pre-highlight stage
  * @returns the HTML tree of the Editor component
  */
 const Editor = (props: any) => {
@@ -48,7 +49,7 @@ const Editor = (props: any) => {
   }, []);
 
   /**
-   * Utility function to check if the given line param (i) is part of an existing line-tuple
+   * Checks if the given line param (i) is part of an existing line-tuple
    * @param i line number
    * @returns true if the param (i) is part of any of the line tuples selected by the user
    */
@@ -59,7 +60,7 @@ const Editor = (props: any) => {
   };
 
   /**
-   * Utility function to check if the given line number param (i) is pre-highlighted
+   * Checks if the given line number param (i) is pre-highlighted
    * @param i line number
    * @returns true if the param (i) is pre-highlighted
    */
@@ -98,7 +99,7 @@ const Editor = (props: any) => {
   };
 
   /**
-   * Utility function that checks if the given line number param (i) is the start of any of the existing line-tuples
+   * Checks if the given line number param (i) is the start of any of the existing line-tuples
    * @param i line number
    * @returns true if any of the line tuples start with the line number provided as the param (i)
    */
@@ -129,7 +130,7 @@ const Editor = (props: any) => {
   };
 
   /**
-   * Navigates user to generation configuration form
+   * Removes unselected lines and navigates the user to generation configuration form
    * @param e next button click event data
    */
   const onHighlightFinish = (e: any) => {
