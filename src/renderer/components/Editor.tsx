@@ -14,12 +14,21 @@ import { useHistory } from 'react-router-dom';
 import { LineTuple } from '../../interface';
 import toast from 'react-hot-toast';
 
+/**
+ * Editor component is responsible for rendering the user selected code file, and providing
+ * an interface for users to cherry-pick lines and line-tuples to generate problem sets.
+ * @param props
+ *  - code : the code from the user selected file to render
+ *  - lineTuples : user selected lineTuples
+ * @returns the HTML tree of the Editor component
+ */
 const Editor = (props: any) => {
   const [lineTuples, setLineTuples] = useState<LineTuple[]>([]);
   const [lineTupleStart, setLineTupleStart] = useState<number | null>(null);
   const [code, setCode] = useState<string>('');
   const history = useHistory();
 
+  // used to manage the state when the component renders
   useEffect(() => {
     if (props.location.state.code) {
       setCode(props.location.state.code);
@@ -38,16 +47,32 @@ const Editor = (props: any) => {
     }
   }, []);
 
+  /**
+   * Utility function to check if the given line param (i) is part of an existing line-tuple
+   * @param i line number
+   * @returns true if the param (i) is part of any of the line tuples selected by the user
+   */
   const isPartOfLineTuple = (i: number) => {
     return (
       lineTuples.filter(({ start, end }) => i >= start && i <= end).length > 0
     );
   };
 
+  /**
+   * Utility function to check if the given line number param (i) is pre-highlighted
+   * @param i line number
+   * @returns true if the param (i) is pre-highlighted
+   */
   const isPreHighlightToggled = (i: number) => {
     return lineTupleStart === i;
   };
 
+  /**
+   * Runs whenever a line is clicked, it updates the state variables
+   * with the appropriate line/line-tuple depending on the event interactions
+   * @param e line click event data
+   * @param i line number that was clicked
+   */
   const handleLineClick = (e: any, i: number) => {
     if (isPartOfLineTuple(i)) {
       return;
@@ -56,6 +81,7 @@ const Editor = (props: any) => {
     if (lineTupleStart == null) {
       setLineTupleStart(i);
     } else {
+      // line is clicked with shift key
       if (e.shiftKey) {
         setLineTuples((lt) => [
           ...lt,
@@ -71,14 +97,28 @@ const Editor = (props: any) => {
     }
   };
 
+  /**
+   * Utility function that checks if the given line number param (i) is the start of any of the existing line-tuples
+   * @param i line number
+   * @returns true if any of the line tuples start with the line number provided as the param (i)
+   */
   const isStart = (i: number) => {
     return lineTuples.filter(({ start, end }) => i === start).length > 0;
   };
 
+  /**
+   * Removes the associated line-tuple from the state
+   * @param e line tuple delete button click event data
+   * @param i line number
+   */
   const handleRemove = (e: any, i: number) => {
     setLineTuples((lt) => [...lt.filter(({ start, end }) => i !== start)]);
   };
 
+  /**
+   * @param i line number
+   * @returns the CSS class for a line depending on the its state
+   */
   const getLineClass = (i: number) => {
     if (isPartOfLineTuple(i)) {
       return 'highlighted';
@@ -88,6 +128,10 @@ const Editor = (props: any) => {
     return '';
   };
 
+  /**
+   * Navigates user to generation configuration form
+   * @param e next button click event data
+   */
   const onHighlightFinish = (e: any) => {
     if (lineTuples.length == 0) {
       toast.error('Please select some lines before proceeding.');
@@ -98,6 +142,8 @@ const Editor = (props: any) => {
     let prevLineTupleStart = lineTupleStart;
 
     const codeLines = code.split('\n');
+
+    // filter only the lines that were selected by the user
     let filteredCodeLines: string[] = [];
     let lineTuplesForFilteredCode: LineTuple[] = [];
 
