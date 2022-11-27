@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { useHistory } from 'react-router-dom';
 
 const supportedExtensions = [
@@ -82,7 +82,12 @@ function FilePicker(props: any) {
           title="Pick a file"
         />
         <div>
-          <button onClick={validateFile}>Next</button>
+          <button
+            data-testid="navigate-to-select-line-tuples-btn"
+            onClick={validateFile}
+          >
+            Next
+          </button>
         </div>
       </div>
     </>
