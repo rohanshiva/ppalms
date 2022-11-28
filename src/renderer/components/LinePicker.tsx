@@ -206,7 +206,7 @@ const LinePicker = (props: any) => {
       </div>
       <h3>Please select lines to generate problems.</h3>
       <div>
-        Use <kbd>(shift+select)</kbd> to select line tuples.
+        Use <kbd>(shift+select)</kbd> to confirm single line selections or to select line tuples.
       </div>
       <Highlight {...defaultProps} theme={theme} code={code} language="jsx">
         {({ className, style, tokens, getLineProps, getTokenProps }) => {
