@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import Editor from '../renderer/components/Editor';
+import LinePicker from '../renderer/components/LinePicker';
 import { toast } from 'react-hot-toast';
 import { spread } from "../TestUtil";
 
@@ -40,10 +40,10 @@ jest.mock('react-router-dom', () => ({
     }
 }));
 
-describe('Editor', () => {
+describe('LinePicker', () => {
   const reactSourceCodeLength = reactSourceCode.split('\n').length;
 
-  const wrapEditorProps = (props: any) => {
+  const wrapLinePickerProps = (props: any) => {
     return {
       location: {
         state: props,
@@ -51,7 +51,7 @@ describe('Editor', () => {
     };
   };
 
-  const ensureEditorRendersSourceCode = (sourceCode: string) => {
+  const ensureLinePickerRendersSourceCode = (sourceCode: string) => {
     const expectedLines = sourceCode.split('\n');
     expectedLines.forEach((value, index) => {
       const actualLine = screen.getByTestId(`${index}-content`);
@@ -114,8 +114,8 @@ describe('Editor', () => {
 
   describe('Render with props', () => {
     test("render with 'state' props", () => {
-      render(<Editor {...wrapEditorProps({ code: reactSourceCode })} />);
-      ensureEditorRendersSourceCode(reactSourceCode);
+      render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
+      ensureLinePickerRendersSourceCode(reactSourceCode);
       ensureLinesHighlighted([], reactSourceCodeLength);
 
       ensureLinesNotPreHighlightToggled(spread(0, reactSourceCodeLength - 1));
@@ -141,8 +141,8 @@ describe('Editor', () => {
           lineTupleStart: 8,
         },
       };
-      render(<Editor {...wrapEditorProps(props)} />);
-      ensureEditorRendersSourceCode(reactSourceCode);
+      render(<LinePicker {...wrapLinePickerProps(props)} />);
+      ensureLinePickerRendersSourceCode(reactSourceCode);
       ensureLinesHighlighted([...spread(1, 5), 7], reactSourceCodeLength);
 
       ensurePreHighlightLineToggled(8, reactSourceCodeLength);
@@ -171,7 +171,7 @@ describe('Editor', () => {
         end: reactSourceCodeLength - 1,
       },
     ])('create LineTuple $testType', ({ start, end }) => {
-      render(<Editor {...wrapEditorProps({ code: reactSourceCode })} />);
+      render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
 
       const startLine = screen.getByTestId(`${start}-toggle`);
 
@@ -192,7 +192,7 @@ describe('Editor', () => {
     });
 
     test('delete LineTuple', () => {
-      render(<Editor {...wrapEditorProps({ code: reactSourceCode })} />);
+      render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
 
       const startLine = screen.getByTestId('0-toggle');
       fireEvent.click(startLine);
@@ -212,7 +212,7 @@ describe('Editor', () => {
     });
 
     test('toggle line pre-highlight', () => {
-      render(<Editor {...wrapEditorProps({ code: reactSourceCode })} />);
+      render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
 
       let startLine = screen.getByTestId('0-toggle');
       fireEvent.click(startLine);
@@ -235,7 +235,7 @@ describe('Editor', () => {
     })
 
     test('submit with no tuples grouped', () => {
-        render(<Editor {...wrapEditorProps({ code: reactSourceCode })} />);
+        render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
         fireEvent.click(screen.getByTestId("line-tuples-submit"));
         expect(toast.error).toBeCalledTimes(1);
 
@@ -246,7 +246,7 @@ describe('Editor', () => {
     });
 
     test('submit with tuples grouped', () => {
-        render(<Editor {...wrapEditorProps({ code: reactSourceCode })} />);
+        render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
 
         fireEvent.click(screen.getByTestId("1-toggle"));
         fireEvent.click(screen.getByTestId("5-toggle"), {shiftKey: true});
@@ -259,11 +259,11 @@ describe('Editor', () => {
         const expectedState = {
             codeLines: spread(1, 5).map(val => lines[val]),
             lineTuples: [{start: 0, end: 4}],
-            editorState: {
+            linePickerState: {
                 lineTuples: [{start: 1, end: 5}],
                 lineTupleStart: null,
             },
-            editorProps: { code: reactSourceCode },
+            linePickerProps: { code: reactSourceCode },
         }
 
         expect(historyReplaceMock).lastCalledWith("/form", expectedState)

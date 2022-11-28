@@ -105,7 +105,7 @@ input {
   justify-content: space-between;
 }
 
-.editor-bottom-btns-container {
+.line-picker-bottom-btns-container {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

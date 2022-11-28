@@ -1,4 +1,4 @@
-// Styles for Editor component
+// Styles for LinePicker component
 
 import styled from "styled-components";
 

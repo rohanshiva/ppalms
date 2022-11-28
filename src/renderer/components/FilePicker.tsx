@@ -31,7 +31,7 @@ const getFileExtension = (filename: string) => {
  * from their filesystem and navigate to line selection screen if the picked file is valid.
  * @param props
  *  - pickedFile : state variable that tracks the file that user picked
- * @returns the HTML tree of the Editor component
+ * @returns the HTML tree of the LinePicker component
  */
 function FilePicker(props: any) {
   const history = useHistory();
@@ -61,7 +61,7 @@ function FilePicker(props: any) {
    * Runs when the user clicks on next button.
    *  - Shows an error toast to the user if they haven't picked a file.
    *  - Shows an error toast if the picked file is invalid.
-   * Navigates the user to line selection screen (Editor component) with the picked file content
+   * Navigates the user to line selection screen (LinePicker component) with the picked file content
    */
   const validateFile = () => {
     if (!pickedFile) {

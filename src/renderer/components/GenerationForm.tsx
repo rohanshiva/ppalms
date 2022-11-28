@@ -72,8 +72,8 @@ const GenerationForm = (props: any) => {
         <button
           onClick={() =>
             history.replace('/select-lines', {
-              prevState: props.location.state.editorState,
-              prevProps: props.location.state.editorProps,
+              prevState: props.location.state.linePickerState,
+              prevProps: props.location.state.linePickerProps,
             })
           }
         >

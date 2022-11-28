@@ -7,7 +7,7 @@ import {
   LineContent,
   LineAction,
   LineActionDiv,
-} from './EditorStyle';
+} from './LinePickerStyle';
 import Highlight, { defaultProps } from 'prism-react-renderer';
 import theme from 'prism-react-renderer/themes/github';
 import { useHistory } from 'react-router-dom';
@@ -15,15 +15,15 @@ import { LineTuple } from '../../interface';
 import { toast } from 'react-hot-toast';
 
 /**
- * Editor component is responsible for rendering the user selected code file, and providing
+ * LinePicker component is responsible for rendering the user selected code file, and providing
  * an interface for users to cherry-pick lines and line-tuples to generate problem sets.
  * @param props
  *  - code : the code from the user selected file to render
- *  - lineTuples : user selected lineTuples, potentially non-empty if the user navigates back to Editor
- *  - lineTupleStart: tracks the line that is in pre-highlight stage, potentially non-empty if the user navigates back to Editor
- * @returns the HTML tree of the Editor component
+ *  - lineTuples : user selected lineTuples, potentially non-empty if the user navigates back to LinePicker
+ *  - lineTupleStart: tracks the line that is in pre-highlight stage, potentially non-empty if the user navigates back to LinePicker
+ * @returns the HTML tree of the LinePicker component
  */
-const Editor = (props: any) => {
+const LinePicker = (props: any) => {
   const [lineTuples, setLineTuples] = useState<LineTuple[]>([]);
   const [lineTupleStart, setLineTupleStart] = useState<number | null>(null);
   const [code, setCode] = useState<string>('');
@@ -175,11 +175,11 @@ const Editor = (props: any) => {
     history.replace('/form', {
       codeLines: filteredCodeLines,
       lineTuples: lineTuplesForFilteredCode,
-      editorState: {
+      linePickerState: {
         lineTuples: prevlineTuples,
         lineTupleStart: prevLineTupleStart,
       },
-      editorProps: { code: code },
+      linePickerProps: { code: code },
     });
   };
 
@@ -250,7 +250,7 @@ const Editor = (props: any) => {
           );
         }}
       </Highlight>
-      <div className="editor-bottom-btns-container">
+      <div className="line-picker-bottom-btns-container">
         <button data-testid="line-tuples-submit" onClick={onHighlightFinish}>
           Next
         </button>
@@ -259,4 +259,4 @@ const Editor = (props: any) => {
   );
 };
 
-export default Editor;
+export default LinePicker;

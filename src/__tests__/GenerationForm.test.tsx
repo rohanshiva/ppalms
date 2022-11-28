@@ -20,11 +20,11 @@ const props = {
     state: {
       codeLines: [],
       lineTuples: [],
-      editorState: {
+      linePickerState: {
         lineTuples: [],
         lineTupleStart: null,
       },
-      editorProps: {
+      linePickerProps: {
         code: '',
       },
     },
