@@ -6,7 +6,7 @@ const mockCode = `x = 2\ny = x\nprint(x+y)`;
 const mockLineTuples = [{ start: 0, end: 2 }];
 const mockProblemTypes = [ProblemType.REORDER];
 
-describe('ProblemSetGenerator tests', () => {
+describe('ProblemSetGenerator', () => {
   test('successfully generate a problem set', () => {
     const mockMaxNumberOfProblems = 2;
     const mockProblemSetName = 'mock_problem_set';
