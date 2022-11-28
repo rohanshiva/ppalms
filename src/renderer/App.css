@@ -85,6 +85,11 @@ input {
   border-left: solid #eed888;
 }
 
+.highlighted2 {
+  background-color: #f7a307;
+  border-left: solid #f3730a;
+}
+
 .prehighlight-selection {
   background-color: #48e4ff;
   border-left: solid #63c7f5;

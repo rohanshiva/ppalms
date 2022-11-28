@@ -73,11 +73,12 @@ describe('ReorderProblemGenerator', () => {
   };
 
   test('generates a single reorder problem', () => {
-    const problems = ReorderProblemGenerator.generate(reactSourceCode, 1);
+    const problems = ReorderProblemGenerator.generate(reactSourceCode, [{start: 0, end: 5}], 1);
     expect(problems.length).toBe(1);
     const problem = problems[0];
     expect(problem.type).toBe(ProblemType.REORDER);
-    expect(problem.data.answer).toBe(reactSourceCode);
+    expect(problem.data.answer.code).toBe(reactSourceCode);
+    expect(problem.data.answer.lineTuples).toStrictEqual([{start: 0, end: 5}]);
     expect(
       doLinesMatchInSomeArrangement(
         problem.data.question,
@@ -87,12 +88,13 @@ describe('ReorderProblemGenerator', () => {
   });
 
   test('unique reordering problems are generated', () => {
-    const problems = ReorderProblemGenerator.generate(reactSourceCode, 10);
+    const problems = ReorderProblemGenerator.generate(reactSourceCode, [{start: 0, end: 2}, {start: 4, end: 6}], 10);
     expect(problems.length).toBe(10);
     const reorderingProblems = new Set();
     for (const problem of problems) {
       expect(problem.type).toBe(ProblemType.REORDER);
-      expect(problem.data.answer).toBe(reactSourceCode);
+      expect(problem.data.answer.code).toBe(reactSourceCode);
+      expect(problem.data.answer.lineTuples).toStrictEqual([{start: 0, end: 2}, {start: 4, end: 6}]);
       reorderingProblems.add(problem.data.question.join('\n'));
       expect(
         doLinesMatchInSomeArrangement(
@@ -105,7 +107,7 @@ describe('ReorderProblemGenerator', () => {
   });
 
   test('more problems are requested to be generated than possible', () => {
-    const problems = ReorderProblemGenerator.generate(smallCodeSample, 10);
+    const problems = ReorderProblemGenerator.generate(smallCodeSample, [{start: 0, end: 1}], 10);
     expect(problems.length).toBe(2);
   });
 });

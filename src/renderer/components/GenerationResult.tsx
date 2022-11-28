@@ -27,6 +27,49 @@ const questionTypeTag = (type: ProblemType) => {
 const GenerationResult = (props: any) => {
   const history = useHistory();
   const { problemSet } = props.location.state;
+
+  /**
+   * An utility function which deals with rendering the answer of a reordering problem
+   * @param problem - the problem whose answer needs to be rendered
+   * @returns - the HTML of the rendered answer
+   */
+  const getAnswer = (problem: Problem, index: number) => {
+    const multilineLineTuples = problem.data.answer.lineTuples.filter(
+      ({ start, end }) => end - start > 0
+    );
+
+    const getMultilineLineTuple = (lineIndex: number) => {
+      for (let i = 0; i < multilineLineTuples.length; i++) {
+        const { start, end } = multilineLineTuples[i];
+        if (start <= lineIndex && end >= lineIndex) {
+          return i;
+        }
+      }
+
+      return null;
+    };
+
+    return problem.data.answer.code.split('\n').map((line, i) => {
+      let multilineLineTupleIndex = getMultilineLineTuple(i);
+      let className = '';
+      if (multilineLineTupleIndex != null) {
+        if (multilineLineTupleIndex % 2 === 0) {
+          className = 'highlighted';
+        } else {
+          className = 'highlighted2';
+        }
+      }
+
+      return (
+        <span
+          data-testid={`question-answer-${index}-line-${i}`}
+          key={`${problem.id}-${i}`}
+          className={className}
+        >{`${line}\n`}</span>
+      );
+    });
+  };
+
   return (
     <>
       <button
@@ -38,6 +81,7 @@ const GenerationResult = (props: any) => {
       </button>
 
       <h1 data-testid="title">Problem Set {problemSet.name}</h1>
+      <h3>Highlighted regions represent line tuples.</h3>
       {problemSet.problems.map((problem: Problem, i: number) => {
         return (
           <div key={i}>
@@ -57,7 +101,7 @@ const GenerationResult = (props: any) => {
             </pre>
             <h4>Answer:</h4>
             <pre data-testid={`question-answer-${i}`}>
-              {problem.data.answer}
+              {getAnswer(problem, i)}
             </pre>
           </div>
         );

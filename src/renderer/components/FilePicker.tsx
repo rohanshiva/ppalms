@@ -19,7 +19,7 @@ const supportedExtensions = [
 ];
 
 /**
- * @param filename
+ * @param filename the name of the file
  * @returns file extension from the given param (filename)
  */
 const getFileExtension = (filename: string) => {

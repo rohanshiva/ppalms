@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import App from './App';
 
+// Script which bridges react to electron (not part of the direct development)
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 root.render(<App />);

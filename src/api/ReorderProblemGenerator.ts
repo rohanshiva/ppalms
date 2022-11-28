@@ -1,4 +1,4 @@
-import { Problem, ProblemType } from '../interface';
+import { Problem, ProblemType, LineTuple } from '../interface';
 
 /**
  * An internal class to PermutationGenerator to store data regarding permutation generator
@@ -116,7 +116,7 @@ export class ReorderProblemGenerator {
    * @param maxNumToGenerate - the max number of problems to generate
    * @returns - the list of generated problems
    */
-  static generate(code: string, maxNumToGenerate: number): Problem[] {
+  static generate(code: string, lineTuples: LineTuple[], maxNumToGenerate: number): Problem[] {
     let problems = [];
     const lines = code.split('\n');
     const generator = new PermutationGenerator(lines.length);
@@ -131,7 +131,10 @@ export class ReorderProblemGenerator {
         type: ProblemType.REORDER,
         data: {
           question: shuffledLines,
-          answer: code,
+          answer: {
+            code: code,
+            lineTuples: lineTuples
+          }
         },
       });
     }

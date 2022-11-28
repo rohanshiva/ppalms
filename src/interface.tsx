@@ -16,7 +16,10 @@ export interface Problem{
 
 export interface ReorderProblemData{
     question: string[],
-    answer:string
+    answer:{
+        code: string,
+        lineTuples: LineTuple[]
+    }
 }
 
 

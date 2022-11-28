@@ -19,8 +19,8 @@ import { toast } from 'react-hot-toast';
  * an interface for users to cherry-pick lines and line-tuples to generate problem sets.
  * @param props
  *  - code : the code from the user selected file to render
- *  - lineTuples : user selected lineTuples
- *  - lineTupleStart: tracks the line that is in pre-highlight stage
+ *  - lineTuples : user selected lineTuples, potentially non-empty if the user navigates back to Editor
+ *  - lineTupleStart: tracks the line that is in pre-highlight stage, potentially non-empty if the user navigates back to Editor
  * @returns the HTML tree of the Editor component
  */
 const Editor = (props: any) => {
@@ -75,6 +75,8 @@ const Editor = (props: any) => {
    * @param i line number that was clicked
    */
   const handleLineClick = (e: any, i: number) => {
+
+    // line-tuples cannot be formed within existing line-tuples
     if (isPartOfLineTuple(i)) {
       return;
     }
@@ -104,16 +106,16 @@ const Editor = (props: any) => {
    * @returns true if any of the line tuples start with the line number provided as the param (i)
    */
   const isStart = (i: number) => {
-    return lineTuples.filter(({ start, end }) => i === start).length > 0;
+    return lineTuples.filter(({ start }) => i === start).length > 0;
   };
 
   /**
    * Removes the associated line-tuple from the state
    * @param e line tuple delete button click event data
-   * @param i line number
+   * @param i line number of the start of the line-tuple
    */
   const handleRemove = (e: any, i: number) => {
-    setLineTuples((lt) => [...lt.filter(({ start, end }) => i !== start)]);
+    setLineTuples((lt) => [...lt.filter(({ start }) => i !== start)]);
   };
 
   /**
@@ -144,7 +146,6 @@ const Editor = (props: any) => {
 
     const codeLines = code.split('\n');
 
-    // filter only the lines that were selected by the user
     let filteredCodeLines: string[] = [];
     let lineTuplesForFilteredCode: LineTuple[] = [];
 
@@ -154,11 +155,14 @@ const Editor = (props: any) => {
 
     let newTupleStart = 0;
     lineTuples.forEach(({ start, end }) => {
+
+      // retain only the lines which are within a line-tuple
       const length = end - start;
       for (let i = start; i <= end; i++) {
         filteredCodeLines.push(codeLines[i]);
       }
 
+      // reconstruct the line-tuples 
       const newTupleEnd = newTupleStart + length;
       lineTuplesForFilteredCode.push({
         start: newTupleStart,
@@ -167,6 +171,7 @@ const Editor = (props: any) => {
       newTupleStart = newTupleEnd + 1;
     });
 
+    // navigate to the generation form
     history.replace('/form', {
       codeLines: filteredCodeLines,
       lineTuples: lineTuplesForFilteredCode,

@@ -2,6 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import Editor from '../renderer/components/Editor';
 import { toast } from 'react-hot-toast';
+import { spread } from "../TestUtil";
 
 
 const reactSourceCode = `
@@ -109,14 +110,6 @@ describe('Editor', () => {
           screen.getByTestId(`${val}-remove`);
         }).toThrow();
       });
-  };
-
-  const spread = (start: number, end: number) => {
-    let arr = [];
-    for (let i = start; i <= end; i++) {
-      arr.push(i);
-    }
-    return arr;
   };
 
   describe('Render with props', () => {
