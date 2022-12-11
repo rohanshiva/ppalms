@@ -4,7 +4,7 @@ import { ProblemSetGenerator } from '../../api/ProblemSetGenerator';
 import { ProblemType, ProblemTypes } from 'interface';
 import { useHistory } from 'react-router-dom';
 
-export type ProblemTypesConfig = {
+type ProblemTypesConfig = {
   [key in ProblemType]: {
     selected: boolean;
     numberOfProblems: number;
@@ -44,9 +44,8 @@ const problemTypeToString = (type: ProblemType) => {
  */
 const GenerationForm = (props: any) => {
   const history = useHistory();
-  const [problemTypesConfig, setProblemTypesConfig] = useState<ProblemTypesConfig>(
-    props.location.state.baseProblemTypesConfig || getBaseProblemTypesConfig()
-  );
+  const [problemTypesConfig, setProblemTypesConfig] =
+    useState<ProblemTypesConfig>(getBaseProblemTypesConfig());
   const [problemSetName, setProblemSetName] = useState('');
   const { codeLines, lineTuples } = props.location.state;
 
@@ -73,10 +72,11 @@ const GenerationForm = (props: any) => {
    */
   const formHandler = (event: any) => {
     event.preventDefault();
-    const isReorderingSelected = problemTypesConfig[ProblemType.REORDER].selected;
+    const isReorderingSelected =
+      problemTypesConfig[ProblemType.REORDER].selected;
 
     const isMultipleChoiceSelected =
-    problemTypesConfig[ProblemType.MULTIPLE_CHOICE].selected;
+      problemTypesConfig[ProblemType.MULTIPLE_CHOICE].selected;
 
     if (!isReorderingSelected && !isMultipleChoiceSelected) {
       toast.error('At least one type of problem must be chosen.');

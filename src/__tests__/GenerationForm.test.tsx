@@ -1,9 +1,7 @@
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { render, screen, cleanup } from '@testing-library/react';
-import GenerationForm, {
-  ProblemTypesConfig,
-} from 'renderer/components/GenerationForm';
+import GenerationForm from 'renderer/components/GenerationForm';
 
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
@@ -50,22 +48,18 @@ describe('GenerationForm', () => {
   };
 
   test('form not being able to submit until all the required inputs have been satisfied', async () => {
-    // passing mock initial problem types config with all the problem types selected
+    setup(defaultProps);
+    // mocking selection of problem types
     // as number of problems for each problem type only appear if they are selected
-    let baseProblemTypesConfig: ProblemTypesConfig = {
-      [ProblemType.REORDER]: {
-        selected: true,
-        numberOfProblems: 0,
-      },
-      [ProblemType.MULTIPLE_CHOICE]: {
-        selected: true,
-        numberOfProblems: 0,
-      },
-    };
+    const reorderCheckbox = screen.getByTestId(
+      'reorder-checkbox'
+    ) as HTMLInputElement;
+    const multipleChoiceCheckbox = screen.getByTestId(
+      'multiple-choice-checkbox'
+    ) as HTMLInputElement;
 
-    const props = { ...defaultProps, baseProblemTypesConfig };
-
-    setup(props);
+    await userEvent.click(multipleChoiceCheckbox);
+    await userEvent.click(reorderCheckbox);
 
     const numberOfProblemsFieldReorder = screen.getByTestId(
       `number-of-problems-field-${ProblemType.REORDER}`
