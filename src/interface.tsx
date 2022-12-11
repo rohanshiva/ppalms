@@ -6,9 +6,10 @@ export interface LineTuple {
 export enum ProblemType {
     REORDER,
     MULTIPLE_CHOICE,
+    FILL_IN_THE_BLANK
 }
 
-export const ProblemTypes = [ProblemType.REORDER, ProblemType.MULTIPLE_CHOICE]
+export const ProblemTypes = [ProblemType.REORDER, ProblemType.MULTIPLE_CHOICE, ProblemType.FILL_IN_THE_BLANK]
 
 export interface Problem{
     id: string,

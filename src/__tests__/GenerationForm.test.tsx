@@ -47,6 +47,39 @@ describe('GenerationForm', () => {
     );
   };
 
+  test('checkboxes should be triggered correctly on user click', async () => {
+    setup(defaultProps);
+
+    const reorderCheckbox = screen.getByTestId(
+      'reorder-checkbox'
+    ) as HTMLInputElement;
+
+    const multipleChoiceCheckbox = screen.getByTestId(
+      'multiple-choice-checkbox'
+    ) as HTMLInputElement;
+
+    const fillInTheBlankCheckbox = screen.getByTestId(
+      'fill-in-the-blank-checkbox'
+    ) as HTMLInputElement;
+
+
+    // all the checkboxes should not have been checked already
+    expect(reorderCheckbox.checked).toBe(false);
+    expect(multipleChoiceCheckbox.checked).toBe(false);
+    expect(fillInTheBlankCheckbox.checked).toBe(false);
+
+    // simulate the user clicking on all the checkboxes
+    await userEvent.click(reorderCheckbox);
+    await userEvent.click(multipleChoiceCheckbox);
+    await userEvent.click(fillInTheBlankCheckbox);
+
+    // all the checkboxes should now be checked
+    expect(reorderCheckbox.checked).toBe(true);
+    expect(multipleChoiceCheckbox.checked).toBe(true);
+    expect(fillInTheBlankCheckbox.checked).toBe(true);
+
+  })
+
   test('form not being able to submit until all the required inputs have been satisfied', async () => {
     setup(defaultProps);
     // mocking selection of problem types
@@ -57,10 +90,13 @@ describe('GenerationForm', () => {
     const multipleChoiceCheckbox = screen.getByTestId(
       'multiple-choice-checkbox'
     ) as HTMLInputElement;
+    const fillInTheBlankCheckbox = screen.getByTestId(
+      'fill-in-the-blank-checkbox'
+    ) as HTMLInputElement;
 
     await userEvent.click(multipleChoiceCheckbox);
     await userEvent.click(reorderCheckbox);
-
+    await userEvent.click(fillInTheBlankCheckbox);
     const numberOfProblemsFieldReorder = screen.getByTestId(
       `number-of-problems-field-${ProblemType.REORDER}`
     ) as HTMLInputElement;
@@ -73,9 +109,14 @@ describe('GenerationForm', () => {
       'problemset-name-field'
     ) as HTMLInputElement;
 
+    const numberOfProblemsFieldFillInTheBlank = screen.getByTestId(
+      `number-of-problems-field-${ProblemType.FILL_IN_THE_BLANK}`
+    ) as HTMLInputElement;
+
     // to test the inputs are required and have default values before any user events.
     expect(numberOfProblemsFieldReorder).toBeInvalid();
     expect(numberOfProblemsFieldMultipleChoice).toBeInvalid();
+    expect(numberOfProblemsFieldFillInTheBlank).toBeInvalid();
     expect(problemSetNameField).toBeInvalid();
   });
 
@@ -93,7 +134,7 @@ describe('GenerationForm', () => {
 
     await userEvent.click(submitBttn);
 
-    // test to see if toast gets triggered when both reorder and mutliple choice checkboxes are not ticked and submit button is clicked
+    // test to see if toast gets triggered when both reorder, mutliple choice and fill in the blank checkboxes are not ticked and submit button is clicked
     expect(toast.error).toBeCalledTimes(1);
   });
 
@@ -113,9 +154,13 @@ describe('GenerationForm', () => {
     const multipleChoiceCheckbox = screen.getByTestId(
       'multiple-choice-checkbox'
     ) as HTMLInputElement;
+    const fillInTheBlankCheckbox = screen.getByTestId(
+      'fill-in-the-blank-checkbox'
+    ) as HTMLInputElement;
 
     await userEvent.click(multipleChoiceCheckbox);
     await userEvent.click(reorderCheckbox);
+    await userEvent.click(fillInTheBlankCheckbox);
 
     // number of problems fields for each problem type only appear if they are selected
     const numberOfProblemsFieldReorder = screen.getByTestId(
@@ -126,9 +171,14 @@ describe('GenerationForm', () => {
       `number-of-problems-field-${ProblemType.MULTIPLE_CHOICE}`
     ) as HTMLInputElement;
 
+    const numberOfProblemsFieldFillInTheBlank = screen.getByTestId(
+      `number-of-problems-field-${ProblemType.FILL_IN_THE_BLANK}`
+    ) as HTMLInputElement;
+
     // inflate the number of problems field for each problem type with valid values
     await userEvent.type(numberOfProblemsFieldReorder, '10');
     await userEvent.type(numberOfProblemsFieldMultipleChoice, '10');
+    await userEvent.type(numberOfProblemsFieldFillInTheBlank, '10');
 
     const submitBttn = screen.getByTestId('submit-bttn') as HTMLInputElement;
 
