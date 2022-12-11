@@ -1,8 +1,38 @@
 import { useState } from 'react';
-import {toast} from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { ProblemSetGenerator } from '../../api/ProblemSetGenerator';
-import { ProblemType } from 'interface';
+import { ProblemType, ProblemTypes } from 'interface';
 import { useHistory } from 'react-router-dom';
+
+export type ProblemTypesConfig = {
+  [key in ProblemType]: {
+    selected: boolean;
+    numberOfProblems: number;
+  };
+};
+
+const getBaseProblemTypesConfig = () => {
+  let problemTypesConfig: ProblemTypesConfig = {
+    [ProblemType.REORDER]: {
+      selected: false,
+      numberOfProblems: 0,
+    },
+    [ProblemType.MULTIPLE_CHOICE]: {
+      selected: false,
+      numberOfProblems: 0,
+    },
+  };
+  return problemTypesConfig;
+};
+
+const problemTypeToString = (type: ProblemType) => {
+  switch (type) {
+    case ProblemType.REORDER:
+      return 'Reorder';
+    case ProblemType.MULTIPLE_CHOICE:
+      return 'Multiple Choice';
+  }
+};
 
 /**
  * Form component to configure the generation process. Lets the user specify options such as
@@ -14,56 +44,88 @@ import { useHistory } from 'react-router-dom';
  */
 const GenerationForm = (props: any) => {
   const history = useHistory();
-  const [isReordering, setIsReordering] = useState(false);
-  const [isMultipleChoice, setIsMultipleChoice] = useState(false);
-  const [numberOfProblems, setNumberOfProblems] = useState<number>(0);
+  const [problemTypesConfig, setProblemTypesConfig] = useState<ProblemTypesConfig>(
+    props.location.state.baseProblemTypesConfig || getBaseProblemTypesConfig()
+  );
   const [problemSetName, setProblemSetName] = useState('');
   const { codeLines, lineTuples } = props.location.state;
 
-   
   /**
    * Utility function to return the selected problem types.
    * @returns {ProblemType[]} an array of the selected problem types.
    */
   const getSelectedProblemTypes = () => {
     let problemTypes: ProblemType[] = [];
-    if (isReordering) {
-      problemTypes.push(ProblemType.REORDER);
-    }
-    if (isMultipleChoice) {
-      problemTypes.push(ProblemType.MULTIPLE_CHOICE);
+    for (const type of ProblemTypes) {
+      if (problemTypesConfig[type].selected) {
+        problemTypes.push(type);
+      }
     }
     return problemTypes;
   };
 
   /**
    * Handler function to validate form, gets triggered on each submit.
-   * If the form has all the required inputs, the {@link ProblemSetGenerator} is called and the problem set is generated. 
-   * Then, the user is redirected to the problem set result screen. 
+   * If the form has all the required inputs, the {@link ProblemSetGenerator} is called and the problem set is generated.
+   * Then, the user is redirected to the problem set result screen.
    * @param event the form submit trigger event
    * @returns {null}
    */
   const formHandler = (event: any) => {
     event.preventDefault();
-    if (!isReordering && !isMultipleChoice) {
+    const isReorderingSelected = problemTypesConfig[ProblemType.REORDER].selected;
+
+    const isMultipleChoiceSelected =
+    problemTypesConfig[ProblemType.MULTIPLE_CHOICE].selected;
+
+    if (!isReorderingSelected && !isMultipleChoiceSelected) {
       toast.error('At least one type of problem must be chosen.');
       return;
     }
+
     const problemSet = ProblemSetGenerator.generate(
       getSelectedProblemTypes(),
       codeLines.join('\n'),
       lineTuples,
-      numberOfProblems,
+      10,
       problemSetName
     );
+
     history.replace('/result', { problemSet });
+  };
+
+  const toggleProblemType = (checked: boolean, type: ProblemType) => {
+    setProblemTypesConfig((prevProblemTypesConfig: ProblemTypesConfig) => ({
+      ...prevProblemTypesConfig,
+      ...{
+        [type]: {
+          selected: checked,
+          numberOfProblems: prevProblemTypesConfig[type].numberOfProblems,
+        },
+      },
+    }));
+  };
+
+  const updateNumberOfProblems = (
+    numberOfProblems: number,
+    type: ProblemType
+  ) => {
+    setProblemTypesConfig((prevProblemTypesConfig: ProblemTypesConfig) => ({
+      ...prevProblemTypesConfig,
+      ...{
+        [type]: {
+          selected: prevProblemTypesConfig[type].selected,
+          numberOfProblems: numberOfProblems,
+        },
+      },
+    }));
   };
 
   return (
     <div>
       <div className="nav-btns">
         <button
-          onClick={(e) => {
+          onClick={(e: any) => {
             history.replace('/');
           }}
         >
@@ -87,50 +149,70 @@ const GenerationForm = (props: any) => {
           <label>
             Re-ordering:
             <input
-              data-testid= "reorder-checkbox"
+              data-testid="reorder-checkbox"
               name="isReordering"
               type="checkbox"
-              checked={isReordering}
-              onChange={() => setIsReordering(!isReordering)}
+              checked={problemTypesConfig[ProblemType.REORDER].selected}
+              onChange={(event: { target: { checked: boolean } }) =>
+                toggleProblemType(event.target.checked, ProblemType.REORDER)
+              }
             />
           </label>
           <label>
             Multiple Choice:
             <input
-              data-testid= "multiple-choice-checkbox"
+              data-testid="multiple-choice-checkbox"
               name="isMultipleChoice"
               type="checkbox"
-              checked={isMultipleChoice}
-              onChange={() => setIsMultipleChoice(!isMultipleChoice)}
+              checked={problemTypesConfig[ProblemType.MULTIPLE_CHOICE].selected}
+              onChange={(event: { target: { checked: boolean } }) =>
+                toggleProblemType(
+                  event.target.checked,
+                  ProblemType.MULTIPLE_CHOICE
+                )
+              }
             />
           </label>
         </div>
-        <div className="question">
-          <label>How many problems do you want to generate?</label>
-          <input
-            data-testid = "problems-field"
-            required
-            min={1}
-            name="numberOfProblems"
-            type="number"
-            value={numberOfProblems}
-            onChange={(event) =>
-              setNumberOfProblems(parseInt(event.target.value))
-            }
-          />
-        </div>
+        {ProblemTypes.map((type) => {
+          if (problemTypesConfig[type].selected) {
+            return (
+              <div className="question" key={type}>
+                <label>
+                  How many {problemTypeToString(type)} type problems do you want
+                  to generate?
+                </label>
+                <input
+                  data-testid={`number-of-problems-field-${type}`}
+                  required
+                  min={1}
+                  name="numberOfProblems"
+                  type="number"
+                  value={problemTypesConfig[type].numberOfProblems}
+                  onChange={(event: { target: { value: string } }) =>
+                    updateNumberOfProblems(parseInt(event.target.value), type)
+                  }
+                />
+              </div>
+            );
+          }
+        })}
         <div className="question">
           <label>What do you want to name your problem set?</label>
           <input
             required
-            data-testid = "problemset-name-field"
+            data-testid="problemset-name-field"
             name="numberOfProblems"
             type="text"
             value={problemSetName}
-            onChange={(event) => setProblemSetName(event.target.value)}
+            onChange={(event: { target: { value: any } }) =>
+              setProblemSetName(event.target.value)
+            }
           />
         </div>
-        <button data-testid = "submit-bttn" type="submit">Generate</button>
+        <button data-testid="submit-bttn" type="submit">
+          Generate
+        </button>
       </form>
     </div>
   );
