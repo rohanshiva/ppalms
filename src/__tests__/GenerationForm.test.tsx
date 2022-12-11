@@ -187,4 +187,29 @@ describe('GenerationForm', () => {
     // test to see that error toast was not called when at all the required fields where filled.
     expect(toast.error).toBeCalledTimes(0);
   });
+
+  test('prompt for number of of problems for a specific problem type should only render if problem type is selected', async () => {
+    setup(defaultProps);
+
+    const reorderCheckbox = screen.getByTestId(
+      'reorder-checkbox'
+    ) as HTMLInputElement;
+    const multipleChoiceCheckbox = screen.getByTestId(
+      'multiple-choice-checkbox'
+    ) as HTMLInputElement;
+    
+    // since reorder type problem wasn't selected, the number of problems prompt for reorder should not appear
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.REORDER}`)).not.toBeInTheDocument();
+
+    // since multiple-choice type problem wasn't selected, the number of problems prompt for multiple-choice should not appear
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.MULTIPLE_CHOICE}`)).not.toBeInTheDocument();
+   
+    await userEvent.click(reorderCheckbox);
+    // since reorder type problem was just selected, the number of problems prompt for reorder should appear
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.REORDER}`)).toBeInTheDocument();
+
+    await userEvent.click(multipleChoiceCheckbox);
+    // since multiple choice type problem was just selected, the number of problems prompt for multiple choice should appear
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.MULTIPLE_CHOICE}`)).toBeInTheDocument();
+  });
 });
