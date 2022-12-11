@@ -21,6 +21,10 @@ const getBaseProblemTypesConfig = () => {
       selected: false,
       numberOfProblems: 0,
     },
+    [ProblemType.FILL_IN_THE_BLANK]: {
+      selected: false,
+      numberOfProblems: 0,
+    },
   };
   return problemTypesConfig;
 };
@@ -31,6 +35,8 @@ const problemTypeToString = (type: ProblemType) => {
       return 'Reorder';
     case ProblemType.MULTIPLE_CHOICE:
       return 'Multiple Choice';
+    case ProblemType.FILL_IN_THE_BLANK:
+      return 'Fill In The Blank'
   }
 };
 
@@ -74,11 +80,10 @@ const GenerationForm = (props: any) => {
   const formHandler = (event: any) => {
     event.preventDefault();
     const isReorderingSelected = problemTypesConfig[ProblemType.REORDER].selected;
+    const isMultipleChoiceSelected = problemTypesConfig[ProblemType.MULTIPLE_CHOICE].selected;
+    const isFillInTheBlankSelected = problemTypesConfig[ProblemType.FILL_IN_THE_BLANK].selected;
 
-    const isMultipleChoiceSelected =
-    problemTypesConfig[ProblemType.MULTIPLE_CHOICE].selected;
-
-    if (!isReorderingSelected && !isMultipleChoiceSelected) {
+    if (!isReorderingSelected && !isMultipleChoiceSelected && !isFillInTheBlankSelected) {
       toast.error('At least one type of problem must be chosen.');
       return;
     }
@@ -169,6 +174,21 @@ const GenerationForm = (props: any) => {
                 toggleProblemType(
                   event.target.checked,
                   ProblemType.MULTIPLE_CHOICE
+                )
+              }
+            />
+          </label>
+          <label>
+            Fill In The Blank:
+            <input
+              data-testid="fill-in-the-blank-checkbox"
+              name="isFillInTheBlank"
+              type="checkbox"
+              checked={problemTypesConfig[ProblemType.FILL_IN_THE_BLANK].selected}
+              onChange={(event: { target: { checked: boolean } }) =>
+                toggleProblemType(
+                  event.target.checked,
+                  ProblemType.FILL_IN_THE_BLANK
                 )
               }
             />
