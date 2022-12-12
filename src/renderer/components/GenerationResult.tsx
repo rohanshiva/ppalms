@@ -118,6 +118,20 @@ const GenerationResult = (props: any) => {
     });
   };
 
+  /**
+   * Export a generated problem-set as a JSON file with the problem-set name provided
+   */
+  const exportProblemSet = () => {
+    const blob = new Blob([JSON.stringify(problemSet, null, 2)], {type: "application/json"})
+    const downloadLink = document.createElement("a")
+    downloadLink.download = `${problemSet.name}.json`
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.addEventListener('click', (e: any) => {
+      setTimeout(() => URL.revokeObjectURL(downloadLink.href), 30 * 1000);
+    });
+    downloadLink.click();
+  }
+
   return (
     <>
       <button
@@ -128,7 +142,10 @@ const GenerationResult = (props: any) => {
         🏠
       </button>
 
-      <h1 data-testid="title">Problem Set {problemSet.name}</h1>
+      <div className="generation-result-opts-container">
+        <h1 data-testid="title">Problem Set {problemSet.name}</h1>
+        <button data-testid="export-btn" onClick={exportProblemSet}>Export</button>
+      </div>
       {problemSet &&
         Array.from(problemsByType.keys()).map((problemType: ProblemType) => (
           <>
