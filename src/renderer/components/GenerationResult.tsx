@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Problem, ProblemType } from '../../interface';
+import { Problem, ProblemSet, ProblemType } from '../../interface';
 
 /**
  * Utility function that returns the correct 'question type' string to display based on the problem type.
@@ -22,6 +22,25 @@ const questionTypeTag = (type: ProblemType) => {
 };
 
 /**
+   * An utility function that splits the problem set by the problem type
+   * @param problemSet - the problemSet that is to be split
+   * @returns {[[]]} returns an 2d array containg all the problems, where each index of the top level array contains all the problems for that specific type.
+   */
+const splitProblems = (problemSet: ProblemSet) => {
+  const problemsByType: Map<ProblemType, Problem[]> = new Map();
+
+  for (const problemType of problemSet.problemTypes) {
+    problemsByType.set(problemType, []);
+  }
+
+  for (const problem of problemSet.problems) {
+    problemsByType.set(problem.type, [...problemsByType.get(problem.type) as Problem[], problem])
+  }
+
+  return problemsByType
+};
+
+/**
  * Generation Result component show all the generated problems. Displays the question, the answer and the ppalm question type
  * for each problem.
  * @param props
@@ -31,31 +50,21 @@ const questionTypeTag = (type: ProblemType) => {
 const GenerationResult = (props: any) => {
   const history = useHistory();
   const { problemSet } = props.location.state;
-  const [problemSet1, setProblemSet] = useState<[]>();
+  const problemsByType = splitProblems(problemSet);
 
-  /**
-   * An utility function that splits the problem set by the problem type
-   * @param problemSet - the problemSet that is to be split
-   * @returns {[[]]} returns an 2d array containg all the problems, where each index of the top level array contains all the problems for that specific type.
-   */
-  const splitProblems = (problemSet: any) => {
-    let problems: any = [];
-
-    for (let val of problemSet.problemTypes) {
-      problems.push([]);
+  const getQuestionContent = (problem: Problem) => {
+    switch(problem.type){
+      case ProblemType.REORDER: {
+        return JSON.stringify(problem.data.question, null, 2);
+      }
+      case ProblemType.FILL_IN_THE_BLANK: {
+        return problem.data.question;
+      }
+      case ProblemType.MULTIPLE_CHOICE: {
+        return ''
+      }
     }
-
-    for (let problem of problemSet.problems) {
-      problems[problem.type].push(problem);
-    }
-
-    return problems;
-  };
-
-  useEffect(() => {
-    const { problemSet } = props.location.state;
-    setProblemSet(splitProblems(problemSet));
-  }, []);
+  }
 
   /**
    * An utility function which deals with rendering the answer based on the problem's type.
@@ -63,9 +72,9 @@ const GenerationResult = (props: any) => {
    * @returns - the HTML of the rendered answer
    */
   const getAnswer = (problem: Problem, index: number) => {
-    if (problem.type !== ProblemType.REORDER) {
+    if (problem.type === ProblemType.FILL_IN_THE_BLANK) {
       //@ts-ignore
-      return <span>{problem.data.answer.code}</span>;
+      return <span>{JSON.stringify(problem.data.answer)}</span>;
     }
 
     //@ts-ignore
@@ -120,24 +129,24 @@ const GenerationResult = (props: any) => {
       </button>
 
       <h1 data-testid="title">Problem Set {problemSet.name}</h1>
-      {problemSet1 &&
-        problemSet1.map((problems: [], i: number) => (
+      {problemSet &&
+        Array.from(problemsByType.keys()).map((problemType: ProblemType) => (
           <>
-            <h2 key={i}>{questionTypeTag(i) + ' Problems'}</h2>
-            {i === ProblemType.REORDER && (
+            <h2 key={problemType}>{questionTypeTag(problemType) + ' Problems'}</h2>
+            {problemType === ProblemType.REORDER && (
               <h3>Highlighted regions represent line tuples.</h3>
             )}
 
-            {problems.map((problem: Problem, j: number) => {
+            {(problemsByType.get(problemType) as Problem[]).map((problem: Problem, problemIndex: number) => {
               return (
-                <div key={`${i}-${j}`}>
+                <div key={`${problemType}-${problemIndex}`}>
                   <h4 className="question-tag">
-                    Question {i}{' '}
+                    Question {problemIndex + 1}{' '}
                     {
                       <pre
                         data-testid={`${questionTypeTag(
                           problem.type
-                        )}-question-type-${j}`}
+                        )}-question-type-${problemIndex}`}
                         className="question-type-tag"
                       >
                         {questionTypeTag(problem.type)}
@@ -147,17 +156,17 @@ const GenerationResult = (props: any) => {
                   <pre
                     data-testid={`${questionTypeTag(
                       problem.type
-                    )}-question-${j}`}
+                    )}-question-${problemIndex}`}
                   >
-                    {JSON.stringify(problem.data.question, null, 2)}
+                    {getQuestionContent(problem)}
                   </pre>
                   <h4>Answer:</h4>
                   <pre
                     data-testid={`${questionTypeTag(
                       problem.type
-                    )}-question-answer-${j}`}
+                    )}-question-answer-${problemIndex}`}
                   >
-                    {getAnswer(problem, j)}
+                    {getAnswer(problem, problemIndex)}
                   </pre>
                 </div>
               );

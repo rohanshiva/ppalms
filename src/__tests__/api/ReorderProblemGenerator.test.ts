@@ -49,11 +49,12 @@ describe('ReorderProblemGenerator', () => {
   };
 
   test('generates a single reorder problem', () => {
-    const problems = ReorderProblemGenerator.generate(
+    const generator = new ReorderProblemGenerator(
       reactSourceCode,
       [{ start: 0, end: 5 }],
       1
     );
+    const problems = generator.generate();
     expect(problems.length).toBe(1);
     const problem = problems[0];
     expect(problem.type).toBe(ProblemType.REORDER);
@@ -75,7 +76,7 @@ describe('ReorderProblemGenerator', () => {
   });
 
   test('unique reordering problems are generated', () => {
-    const problems = ReorderProblemGenerator.generate(
+    const generator = new ReorderProblemGenerator(
       reactSourceCode,
       [
         { start: 0, end: 2 },
@@ -83,6 +84,7 @@ describe('ReorderProblemGenerator', () => {
       ],
       10
     );
+    const problems = generator.generate();
     expect(problems.length).toBe(10);
     const reorderingProblems = new Set();
     for (const problem of problems) {
@@ -108,11 +110,12 @@ describe('ReorderProblemGenerator', () => {
   });
 
   test('more problems are requested to be generated than possible', () => {
-    const problems = ReorderProblemGenerator.generate(
+    const generator = new ReorderProblemGenerator(
       smallCodeSample,
       [{ start: 0, end: 1 }],
       10
     );
+    const problems = generator.generate();
     expect(problems.length).toBe(2);
   });
 });

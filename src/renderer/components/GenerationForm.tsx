@@ -98,16 +98,25 @@ const GenerationForm = (props: any) => {
     const isMultipleChoiceSelected =
       problemTypesConfig[ProblemType.MULTIPLE_CHOICE].selected;
 
-    if (!isReorderingSelected && !isMultipleChoiceSelected) {
+    const isFillInTheBlankSelected = problemTypesConfig[ProblemType.FILL_IN_THE_BLANK].selected;
+
+    if (!isReorderingSelected && !isMultipleChoiceSelected && !isFillInTheBlankSelected) {
       toast.error('At least one type of problem must be chosen.');
       return;
     }
 
+    let numOfProbsPerType = {};
+    for(const problemType of ProblemTypes){
+      if(problemTypesConfig[problemType].selected){
+        //@ts-ignore
+        numOfProbsPerType[problemType] = problemTypesConfig[problemType].numberOfProblems;
+      }
+    }
     const problemSet = ProblemSetGenerator.generate(
-      getSelectedProblemTypes(),
+      getSelectedProblemTypes(), 
       codeLines.join('\n'),
       lineTuples,
-      10,
+      numOfProbsPerType as any,
       problemSetName
     );
 

@@ -70,7 +70,7 @@ describe('GenerationResult', () => {
       [ProblemType.REORDER],
       sourceCode,
       lineTuples,
-      1,
+      {0: 1} as any,
       'PSet Name'
     );
     render(
@@ -119,7 +119,7 @@ describe('GenerationResult', () => {
         { start: 1, end: 2 },
         { start: 3, end: 6 },
       ],
-      10,
+      {0: 10} as any,
       'PSet Name'
     );
     render(
