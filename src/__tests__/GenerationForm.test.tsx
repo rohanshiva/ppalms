@@ -1,9 +1,7 @@
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { render, screen, cleanup } from '@testing-library/react';
-import GenerationForm, {
-  ProblemTypesConfig,
-} from 'renderer/components/GenerationForm';
+import GenerationForm from 'renderer/components/GenerationForm';
 
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
@@ -83,27 +81,22 @@ describe('GenerationForm', () => {
   })
 
   test('form not being able to submit until all the required inputs have been satisfied', async () => {
-    // passing mock initial problem types config with all the problem types selected
+    setup(defaultProps);
+    // mocking selection of problem types
     // as number of problems for each problem type only appear if they are selected
-    let baseProblemTypesConfig: ProblemTypesConfig = {
-      [ProblemType.REORDER]: {
-        selected: true,
-        numberOfProblems: 0,
-      },
-      [ProblemType.MULTIPLE_CHOICE]: {
-        selected: true,
-        numberOfProblems: 0,
-      },
-      [ProblemType.FILL_IN_THE_BLANK]: {
-        selected: true,
-        numberOfProblems: 0,
-      },
-    };
+    const reorderCheckbox = screen.getByTestId(
+      'reorder-checkbox'
+    ) as HTMLInputElement;
+    const multipleChoiceCheckbox = screen.getByTestId(
+      'multiple-choice-checkbox'
+    ) as HTMLInputElement;
+    const fillInTheBlankCheckbox = screen.getByTestId(
+      'fill-in-the-blank-checkbox'
+    ) as HTMLInputElement;
 
-    const props = { ...defaultProps, baseProblemTypesConfig };
-
-    setup(props);
-
+    await userEvent.click(multipleChoiceCheckbox);
+    await userEvent.click(reorderCheckbox);
+    await userEvent.click(fillInTheBlankCheckbox);
     const numberOfProblemsFieldReorder = screen.getByTestId(
       `number-of-problems-field-${ProblemType.REORDER}`
     ) as HTMLInputElement;
@@ -193,5 +186,30 @@ describe('GenerationForm', () => {
 
     // test to see that error toast was not called when at all the required fields where filled.
     expect(toast.error).toBeCalledTimes(0);
+  });
+
+  test('prompt for number of of problems for a specific problem type should only render if problem type is selected', async () => {
+    setup(defaultProps);
+
+    const reorderCheckbox = screen.getByTestId(
+      'reorder-checkbox'
+    ) as HTMLInputElement;
+    const multipleChoiceCheckbox = screen.getByTestId(
+      'multiple-choice-checkbox'
+    ) as HTMLInputElement;
+    
+    // since reorder type problem wasn't selected, the number of problems prompt for reorder should not appear
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.REORDER}`)).not.toBeInTheDocument();
+
+    // since multiple-choice type problem wasn't selected, the number of problems prompt for multiple-choice should not appear
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.MULTIPLE_CHOICE}`)).not.toBeInTheDocument();
+   
+    await userEvent.click(reorderCheckbox);
+    // since reorder type problem was just selected, the number of problems prompt for reorder should appear
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.REORDER}`)).toBeInTheDocument();
+
+    await userEvent.click(multipleChoiceCheckbox);
+    // since multiple choice type problem was just selected, the number of problems prompt for multiple choice should appear
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.MULTIPLE_CHOICE}`)).toBeInTheDocument();
   });
 });

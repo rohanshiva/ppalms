@@ -4,13 +4,21 @@ import { ProblemSetGenerator } from '../../api/ProblemSetGenerator';
 import { ProblemType, ProblemTypes } from 'interface';
 import { useHistory } from 'react-router-dom';
 
-export type ProblemTypesConfig = {
+/**
+ * Type to represent the state variable problemTypesConfig, which contains config  
+ * information for each problem type such as number of problems, and selected status. 
+ */
+type ProblemTypesConfig = {
   [key in ProblemType]: {
     selected: boolean;
     numberOfProblems: number;
   };
 };
 
+/**
+ * 
+ * @returns a base configuration for each problem type 
+ */
 const getBaseProblemTypesConfig = () => {
   let problemTypesConfig: ProblemTypesConfig = {
     [ProblemType.REORDER]: {
@@ -29,6 +37,11 @@ const getBaseProblemTypesConfig = () => {
   return problemTypesConfig;
 };
 
+/**
+ * 
+ * @param type 
+ * @returns a string representation of the provided problem type
+ */
 const problemTypeToString = (type: ProblemType) => {
   switch (type) {
     case ProblemType.REORDER:
@@ -50,9 +63,9 @@ const problemTypeToString = (type: ProblemType) => {
  */
 const GenerationForm = (props: any) => {
   const history = useHistory();
-  const [problemTypesConfig, setProblemTypesConfig] = useState<ProblemTypesConfig>(
-    props.location.state.baseProblemTypesConfig || getBaseProblemTypesConfig()
-  );
+  // problemTypesConfig contains configuration for each problem type such as number of problems and the selected status
+  const [problemTypesConfig, setProblemTypesConfig] =
+    useState<ProblemTypesConfig>(getBaseProblemTypesConfig());
   const [problemSetName, setProblemSetName] = useState('');
   const { codeLines, lineTuples } = props.location.state;
 
@@ -80,10 +93,11 @@ const GenerationForm = (props: any) => {
   const formHandler = (event: any) => {
     event.preventDefault();
     const isReorderingSelected = problemTypesConfig[ProblemType.REORDER].selected;
-    const isMultipleChoiceSelected = problemTypesConfig[ProblemType.MULTIPLE_CHOICE].selected;
-    const isFillInTheBlankSelected = problemTypesConfig[ProblemType.FILL_IN_THE_BLANK].selected;
 
-    if (!isReorderingSelected && !isMultipleChoiceSelected && !isFillInTheBlankSelected) {
+    const isMultipleChoiceSelected =
+    problemTypesConfig[ProblemType.MULTIPLE_CHOICE].selected;
+
+    if (!isReorderingSelected && !isMultipleChoiceSelected) {
       toast.error('At least one type of problem must be chosen.');
       return;
     }
@@ -99,6 +113,11 @@ const GenerationForm = (props: any) => {
     history.replace('/result', { problemSet });
   };
 
+  /**
+   * Toggles the selected status of the provided problem type in problemTypesConfig 
+   * @param checked selected status
+   * @param type problem type to toggle
+   */
   const toggleProblemType = (checked: boolean, type: ProblemType) => {
     setProblemTypesConfig((prevProblemTypesConfig: ProblemTypesConfig) => ({
       ...prevProblemTypesConfig,
@@ -111,6 +130,11 @@ const GenerationForm = (props: any) => {
     }));
   };
 
+  /**
+   * Updates the problemTypesConfig with the provided numberOfProblems for the provided problem type
+   * @param numberOfProblems new number of problems for the provided problem type (param type)
+   * @param type problem type for the number of problems update
+   */
   const updateNumberOfProblems = (
     numberOfProblems: number,
     type: ProblemType
