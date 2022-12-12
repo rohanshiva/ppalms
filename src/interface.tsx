@@ -1,6 +1,6 @@
 export interface LineTuple {
-    start: number,
-    end: number
+  start: number;
+  end: number;
 }
 
 export enum ProblemType {
@@ -11,26 +11,28 @@ export enum ProblemType {
 
 export const ProblemTypes = [ProblemType.REORDER, ProblemType.MULTIPLE_CHOICE, ProblemType.FILL_IN_THE_BLANK]
 
-export interface Problem{
-    id: string,
-    type: ProblemType,
-    data: ReorderProblemData
+export interface Problem {
+  id: string;
+  type: ProblemType;
+  data: ReorderProblemData | FillInTheBlankProblemData;
 }
 
-export interface ReorderProblemData{
-    question: string[],
-    answer:{
-        code: string,
-        lineTuples: LineTuple[]
-    }
+export interface ReorderProblemData {
+  question: string[];
+  answer: {
+    code: string;
+    lineTuples: LineTuple[];
+  };
 }
 
-
-export interface ProblemSet{
-    name: string,
-    problems: Problem[],
-    generatedAt: string,
-    problemTypes: ProblemType[]
+export interface FillInTheBlankProblemData {
+  question: string;
+  answer: string[];
 }
 
-  
+export interface ProblemSet {
+  name: string;
+  problems: Problem[];
+  generatedAt: string;
+  problemTypes: ProblemType[];
+}

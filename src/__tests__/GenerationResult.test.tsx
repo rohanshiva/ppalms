@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { ProblemSetGenerator } from 'api/ProblemSetGenerator';
 import { ProblemType } from 'interface';
-import { spread } from '../TestUtil';
+import { spread } from '../Util';
 import GenerationResult from '../renderer/components/GenerationResult';
 
 const sourceCode = `
@@ -153,8 +153,10 @@ describe('GenerationResult', () => {
       );
 
       // check to see if the correct answer for that question is being rendered.
+      //@ts-ignore
       problem.data.answer.code
         .split('\n')
+        //@ts-ignore
         .forEach((expectedLine, lineIndex) => {
           const actualLine = screen.getByTestId(
             `Reorder-question-answer-${i}-line-${lineIndex}`

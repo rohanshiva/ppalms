@@ -64,10 +64,13 @@ const GenerationResult = (props: any) => {
    */
   const getAnswer = (problem: Problem, index: number) => {
     if (problem.type !== ProblemType.REORDER) {
+      //@ts-ignore
       return <span>{problem.data.answer.code}</span>;
     }
 
+    //@ts-ignore
     const multilineLineTuples = problem.data.answer.lineTuples.filter(
+      //@ts-ignore
       ({ start, end }) => end - start > 0
     );
 
@@ -82,6 +85,7 @@ const GenerationResult = (props: any) => {
       return null;
     };
 
+    //@ts-ignore
     return problem.data.answer.code.split('\n').map((line, i) => {
       let multilineLineTupleIndex = getMultilineLineTuple(i);
       let className = '';

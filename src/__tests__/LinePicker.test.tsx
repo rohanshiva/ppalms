@@ -2,8 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import LinePicker from '../renderer/components/LinePicker';
 import { toast } from 'react-hot-toast';
-import { spread } from "../TestUtil";
-
+import { spread } from '../Util';
 
 const reactSourceCode = `
 import React, { useState } from "react";
@@ -23,21 +22,20 @@ function Example() {
 `.trim();
 
 jest.mock('react-hot-toast', () => ({
-    toast: {
-      success: jest.fn(),
-      error: jest.fn(),
-    },
-  }));
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 
-
-const historyReplaceMock = jest.fn((path, state) => {})
+const historyReplaceMock = jest.fn((path, state) => {});
 
 jest.mock('react-router-dom', () => ({
-    useHistory:() => {
-        return {
-            replace: historyReplaceMock
-        }
-    }
+  useHistory: () => {
+    return {
+      replace: historyReplaceMock,
+    };
+  },
 }));
 
 describe('LinePicker', () => {
@@ -114,7 +112,9 @@ describe('LinePicker', () => {
 
   describe('Render with props', () => {
     test("render with 'state' props", () => {
-      render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
+      render(
+        <LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />
+      );
       ensureLinePickerRendersSourceCode(reactSourceCode);
       ensureLinesHighlighted([], reactSourceCodeLength);
 
@@ -171,7 +171,9 @@ describe('LinePicker', () => {
         end: reactSourceCodeLength - 1,
       },
     ])('create LineTuple $testType', ({ start, end }) => {
-      render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
+      render(
+        <LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />
+      );
 
       const startLine = screen.getByTestId(`${start}-toggle`);
 
@@ -192,7 +194,9 @@ describe('LinePicker', () => {
     });
 
     test('delete LineTuple', () => {
-      render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
+      render(
+        <LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />
+      );
 
       const startLine = screen.getByTestId('0-toggle');
       fireEvent.click(startLine);
@@ -204,7 +208,7 @@ describe('LinePicker', () => {
       ensureRemoveOptionsOnLines([0], reactSourceCodeLength);
 
       const removeToggle = screen.getByTestId('0-remove');
-      fireEvent.click(removeToggle)
+      fireEvent.click(removeToggle);
 
       ensureLinesHighlighted([], reactSourceCodeLength);
       ensureRemoveOptionsOnLines([], reactSourceCodeLength);
@@ -212,7 +216,9 @@ describe('LinePicker', () => {
     });
 
     test('toggle line pre-highlight', () => {
-      render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
+      render(
+        <LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />
+      );
 
       let startLine = screen.getByTestId('0-toggle');
       fireEvent.click(startLine);
@@ -230,43 +236,46 @@ describe('LinePicker', () => {
 
   describe('LineTuple submission', () => {
     afterEach(() => {
-        jest.resetAllMocks();
-        cleanup();
-    })
+      jest.resetAllMocks();
+      cleanup();
+    });
 
     test('submit with no tuples grouped', () => {
-        render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
-        fireEvent.click(screen.getByTestId("line-tuples-submit"));
-        expect(toast.error).toBeCalledTimes(1);
+      render(
+        <LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />
+      );
+      fireEvent.click(screen.getByTestId('line-tuples-submit'));
+      expect(toast.error).toBeCalledTimes(1);
 
-        fireEvent.click(screen.getByTestId("0-toggle"));
-        fireEvent.click(screen.getByTestId("line-tuples-submit"));
-        expect(toast.error).toBeCalledTimes(2);
-
+      fireEvent.click(screen.getByTestId('0-toggle'));
+      fireEvent.click(screen.getByTestId('line-tuples-submit'));
+      expect(toast.error).toBeCalledTimes(2);
     });
 
     test('submit with tuples grouped', () => {
-        render(<LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />);
+      render(
+        <LinePicker {...wrapLinePickerProps({ code: reactSourceCode })} />
+      );
 
-        fireEvent.click(screen.getByTestId("1-toggle"));
-        fireEvent.click(screen.getByTestId("5-toggle"), {shiftKey: true});
+      fireEvent.click(screen.getByTestId('1-toggle'));
+      fireEvent.click(screen.getByTestId('5-toggle'), { shiftKey: true });
 
-        fireEvent.click(screen.getByTestId("line-tuples-submit"));
-        expect(toast.error).not.toHaveBeenCalled();
+      fireEvent.click(screen.getByTestId('line-tuples-submit'));
+      expect(toast.error).not.toHaveBeenCalled();
 
-        const lines = reactSourceCode.split("\n");
+      const lines = reactSourceCode.split('\n');
 
-        const expectedState = {
-            codeLines: spread(1, 5).map(val => lines[val]),
-            lineTuples: [{start: 0, end: 4}],
-            linePickerState: {
-                lineTuples: [{start: 1, end: 5}],
-                lineTupleStart: null,
-            },
-            linePickerProps: { code: reactSourceCode },
-        }
+      const expectedState = {
+        codeLines: spread(1, 5).map((val) => lines[val]),
+        lineTuples: [{ start: 0, end: 4 }],
+        linePickerState: {
+          lineTuples: [{ start: 1, end: 5 }],
+          lineTupleStart: null,
+        },
+        linePickerProps: { code: reactSourceCode },
+      };
 
-        expect(historyReplaceMock).lastCalledWith("/form", expectedState)
+      expect(historyReplaceMock).lastCalledWith('/form', expectedState);
     });
   });
 });
