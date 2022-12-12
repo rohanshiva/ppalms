@@ -132,7 +132,6 @@ describe('GenerationResult', () => {
 
       // check to see if the correct answer for that question is being rendered.
       problem.data.answer.code.split("\n").forEach((expectedLine, lineIndex) => {
-        console.log(i + "-" + lineIndex);
         const actualLine = screen.getByTestId(`Reorder-question-answer-${i}-line-${lineIndex}`);
         expect(actualLine.textContent?.trim()).toBe(expectedLine.trim());
       });
