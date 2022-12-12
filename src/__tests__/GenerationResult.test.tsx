@@ -75,7 +75,7 @@ describe('GenerationResult', () => {
 
     multilineLineTuples.forEach(({ start, end }, index) => {
       for (let i = start; i <= end; i++) {
-        const answerLine = screen.getByTestId(`question-answer-0-line-${i}`);
+        const answerLine = screen.getByTestId(`Reorder-question-answer-0-line-${i}`);
         if (index % 2 === 0) {
           expect(answerLine.classList).toContain('highlighted');
         } else {
@@ -89,7 +89,7 @@ describe('GenerationResult', () => {
         multilineLineTuples.filter(({ start, end }) => (start <= i && i <= end)).length === 0
       )
       .forEach((lineIndex) => {
-        const answerLine = screen.getByTestId(`question-answer-0-line-${lineIndex}`);
+        const answerLine = screen.getByTestId(`Reorder-question-answer-0-line-${lineIndex}`);
         expect(answerLine.classList).not.toContain('highlighted');
         expect(answerLine.classList).not.toContain('highlighted2');
       });
@@ -117,8 +117,8 @@ describe('GenerationResult', () => {
 
     let i = 0;
     for (let problem of problemSet.problems) {
-      let questionTypeElement = screen.getByTestId(`question-type-${i}`);
-      let questionElement = screen.getByTestId(`question-${i}`);
+      let questionTypeElement = screen.getByTestId(`Reorder-question-type-${i}`);
+      let questionElement = screen.getByTestId(`Reorder-question-${i}`);
 
       // check to see if the rendered question type string is as expected.
       expect(getProblemType(problem.type)).toEqual(
@@ -132,7 +132,8 @@ describe('GenerationResult', () => {
 
       // check to see if the correct answer for that question is being rendered.
       problem.data.answer.code.split("\n").forEach((expectedLine, lineIndex) => {
-        const actualLine = screen.getByTestId(`question-answer-${i}-line-${lineIndex}`);
+        console.log(i + "-" + lineIndex);
+        const actualLine = screen.getByTestId(`Reorder-question-answer-${i}-line-${lineIndex}`);
         expect(actualLine.textContent?.trim()).toBe(expectedLine.trim());
       });
       i += 1;

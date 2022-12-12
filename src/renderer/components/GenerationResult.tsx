@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Problem, ProblemType } from '../../interface';
 
@@ -14,6 +15,9 @@ const questionTypeTag = (type: ProblemType) => {
     case ProblemType.MULTIPLE_CHOICE: {
       return 'MCQ';
     }
+    case ProblemType.FILL_IN_THE_BLANK: {
+      return 'FillInTheBlank'
+    }
   }
 };
 
@@ -27,13 +31,52 @@ const questionTypeTag = (type: ProblemType) => {
 const GenerationResult = (props: any) => {
   const history = useHistory();
   const { problemSet } = props.location.state;
+  const [problemSet1, setProblemSet] = useState<[]>();
 
   /**
-   * An utility function which deals with rendering the answer of a reordering problem
+   * An utility function that splits the problem set by the problem type
+   * @param problemSet - the problemSet that is to be split
+   * @returns {[[]]} returns an 2d array containg all the problems, where each index of the top level array contains all the problems for that specific type.
+   */
+  const splitProblems = (problemSet: any) => {
+    
+    let problems: any = [];
+
+    for(let val of problemSet.problemTypes) {
+      problems.push([]);
+    }
+
+    for(let problem of problemSet.problems){
+      problems[problem.type].push(problem)
+    }
+
+    console.log(problems)
+
+    return problems;
+
+  }
+
+  useEffect(() => {
+    const { problemSet } = props.location.state;
+    setProblemSet(splitProblems(problemSet))
+  },[])
+
+
+  /**
+   * An utility function which deals with rendering the answer based on the problem's type.
    * @param problem - the problem whose answer needs to be rendered
    * @returns - the HTML of the rendered answer
    */
   const getAnswer = (problem: Problem, index: number) => {
+
+    if(problem.type !== ProblemType.REORDER) {
+      return (
+        <span>
+          {problem.data.answer.code}
+        </span>
+      )
+    }
+
     const multilineLineTuples = problem.data.answer.lineTuples.filter(
       ({ start, end }) => end - start > 0
     );
@@ -62,7 +105,7 @@ const GenerationResult = (props: any) => {
 
       return (
         <span
-          data-testid={`question-answer-${index}-line-${i}`}
+          data-testid={`${questionTypeTag(problem.type)}-question-answer-${index}-line-${i}`}
           key={`${problem.id}-${i}`}
           className={className}
         >{`${line}\n`}</span>
@@ -81,31 +124,39 @@ const GenerationResult = (props: any) => {
       </button>
 
       <h1 data-testid="title">Problem Set {problemSet.name}</h1>
-      <h3>Highlighted regions represent line tuples.</h3>
-      {problemSet.problems.map((problem: Problem, i: number) => {
+      {problemSet1 && problemSet1.map((problems: [], i: number) =>
+        <>
+          <h2 key={i}>
+          {questionTypeTag(i) + " Problems"}
+        </h2>
+        {i === ProblemType.REORDER && (<h3>Highlighted regions represent line tuples.</h3>)}
+
+        {problems.map((problem: Problem, j: number) => {
         return (
-          <div key={i}>
+          <div key={`${i}-${j}`}>
             <h4 className="question-tag">
               Question {i}{' '}
               {
                 <pre
-                  data-testid={`question-type-${i}`}
+                  data-testid={`${questionTypeTag(problem.type)}-question-type-${j}`}
                   className="question-type-tag"
                 >
                   {questionTypeTag(problem.type)}
                 </pre>
               }
             </h4>
-            <pre data-testid={`question-${i}`}>
+            <pre data-testid={`${questionTypeTag(problem.type)}-question-${j}`}>
               {JSON.stringify(problem.data.question, null, 2)}
             </pre>
             <h4>Answer:</h4>
-            <pre data-testid={`question-answer-${i}`}>
-              {getAnswer(problem, i)}
+            <pre data-testid={`${questionTypeTag(problem.type)}-question-answer-${j}`}>
+              {getAnswer(problem, j)}
             </pre>
           </div>
         );
       })}
+        </> 
+      )}
     </>
   );
 };
