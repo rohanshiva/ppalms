@@ -195,31 +195,30 @@ describe('GenerationForm', () => {
     const multipleChoiceCheckbox = screen.getByTestId(
       'multiple-choice-checkbox'
     ) as HTMLInputElement;
-
+    const fillInTheBlankCheckbox = screen.getByTestId(
+      'fill-in-the-blank-checkbox'
+    ) as HTMLInputElement;
+    
     // since reorder type problem wasn't selected, the number of problems prompt for reorder should not appear
-    expect(
-      screen.queryByTestId(`number-of-problems-field-${ProblemType.REORDER}`)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.REORDER}`)).not.toBeInTheDocument();
 
     // since multiple-choice type problem wasn't selected, the number of problems prompt for multiple-choice should not appear
-    expect(
-      screen.queryByTestId(
-        `number-of-problems-field-${ProblemType.MULTIPLE_CHOICE}`
-      )
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.MULTIPLE_CHOICE}`)).not.toBeInTheDocument();
 
+    // since fill in the blank type problem wasn't selected, the number of problems prompt for fill in the blank should not appear
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.FILL_IN_THE_BLANK}`)).not.toBeInTheDocument();
+   
     await userEvent.click(reorderCheckbox);
     // since reorder type problem was just selected, the number of problems prompt for reorder should appear
-    expect(
-      screen.queryByTestId(`number-of-problems-field-${ProblemType.REORDER}`)
-    ).toBeInTheDocument();
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.REORDER}`)).toBeInTheDocument();
 
     await userEvent.click(multipleChoiceCheckbox);
     // since multiple choice type problem was just selected, the number of problems prompt for multiple choice should appear
-    expect(
-      screen.queryByTestId(
-        `number-of-problems-field-${ProblemType.MULTIPLE_CHOICE}`
-      )
-    ).toBeInTheDocument();
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.MULTIPLE_CHOICE}`)).toBeInTheDocument();
+
+    await userEvent.click(fillInTheBlankCheckbox);
+    // since fill in the blank type problem was just selected, the number of problems prompt for fill in the blank should appear
+    expect(screen.queryByTestId(`number-of-problems-field-${ProblemType.MULTIPLE_CHOICE}`)).toBeInTheDocument();
   });
+  
 });
