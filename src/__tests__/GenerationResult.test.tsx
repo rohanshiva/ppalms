@@ -5,7 +5,6 @@ import { ProblemType } from 'interface';
 import { spread } from '../TestUtil';
 import GenerationResult from '../renderer/components/GenerationResult';
 
-
 const sourceCode = `
 import React, { useState } from "react";
 
@@ -45,15 +44,26 @@ describe('GenerationResult', () => {
     },
     {
       testType: 'consequtive multiline line-tuples',
-      lineTuples: [{ start: 1, end: 3 }, {start: 4, end: 6}],
+      lineTuples: [
+        { start: 1, end: 3 },
+        { start: 4, end: 6 },
+      ],
     },
     {
       testType: 'mutli-line, single-line, multi-line line-tuples ',
-      lineTuples: [{ start: 1, end: 3 }, {start: 4, end: 4}, {start:5, end: 6}],
+      lineTuples: [
+        { start: 1, end: 3 },
+        { start: 4, end: 4 },
+        { start: 5, end: 6 },
+      ],
     },
     {
       testType: 'only single-line line-tuples',
-      lineTuples: [{ start: 1, end: 1 }, {start: 3, end: 3}, {start:4, end: 4}],
+      lineTuples: [
+        { start: 1, end: 1 },
+        { start: 3, end: 3 },
+        { start: 4, end: 4 },
+      ],
     },
   ])('render answer of a problem: $testType', ({ lineTuples }) => {
     const problemSet = ProblemSetGenerator.generate(
@@ -70,12 +80,14 @@ describe('GenerationResult', () => {
     );
 
     const multilineLineTuples = lineTuples.filter(
-      ({ start, end }) => (end - start) > 0
+      ({ start, end }) => end - start > 0
     );
 
     multilineLineTuples.forEach(({ start, end }, index) => {
       for (let i = start; i <= end; i++) {
-        const answerLine = screen.getByTestId(`Reorder-question-answer-0-line-${i}`);
+        const answerLine = screen.getByTestId(
+          `Reorder-question-answer-0-line-${i}`
+        );
         if (index % 2 === 0) {
           expect(answerLine.classList).toContain('highlighted');
         } else {
@@ -85,11 +97,15 @@ describe('GenerationResult', () => {
     });
 
     spread(0, sourceCodeLength - 1)
-      .filter((i) =>
-        multilineLineTuples.filter(({ start, end }) => (start <= i && i <= end)).length === 0
+      .filter(
+        (i) =>
+          multilineLineTuples.filter(({ start, end }) => start <= i && i <= end)
+            .length === 0
       )
       .forEach((lineIndex) => {
-        const answerLine = screen.getByTestId(`Reorder-question-answer-0-line-${lineIndex}`);
+        const answerLine = screen.getByTestId(
+          `Reorder-question-answer-0-line-${lineIndex}`
+        );
         expect(answerLine.classList).not.toContain('highlighted');
         expect(answerLine.classList).not.toContain('highlighted2');
       });
@@ -106,9 +122,13 @@ describe('GenerationResult', () => {
       10,
       'PSet Name'
     );
-    render(<GenerationResult {...wrapGenerationResultProps({
-      problemSet: problemSet
-    })} />);
+    render(
+      <GenerationResult
+        {...wrapGenerationResultProps({
+          problemSet: problemSet,
+        })}
+      />
+    );
 
     const titleElement = screen.getByTestId('title');
 
@@ -117,7 +137,9 @@ describe('GenerationResult', () => {
 
     let i = 0;
     for (let problem of problemSet.problems) {
-      let questionTypeElement = screen.getByTestId(`Reorder-question-type-${i}`);
+      let questionTypeElement = screen.getByTestId(
+        `Reorder-question-type-${i}`
+      );
       let questionElement = screen.getByTestId(`Reorder-question-${i}`);
 
       // check to see if the rendered question type string is as expected.
@@ -131,10 +153,14 @@ describe('GenerationResult', () => {
       );
 
       // check to see if the correct answer for that question is being rendered.
-      problem.data.answer.code.split("\n").forEach((expectedLine, lineIndex) => {
-        const actualLine = screen.getByTestId(`Reorder-question-answer-${i}-line-${lineIndex}`);
-        expect(actualLine.textContent?.trim()).toBe(expectedLine.trim());
-      });
+      problem.data.answer.code
+        .split('\n')
+        .forEach((expectedLine, lineIndex) => {
+          const actualLine = screen.getByTestId(
+            `Reorder-question-answer-${i}-line-${lineIndex}`
+          );
+          expect(actualLine.textContent?.trim()).toBe(expectedLine.trim());
+        });
       i += 1;
     }
   });

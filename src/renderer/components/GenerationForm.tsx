@@ -5,8 +5,8 @@ import { ProblemType, ProblemTypes } from 'interface';
 import { useHistory } from 'react-router-dom';
 
 /**
- * Type to represent the state variable problemTypesConfig, which contains config  
- * information for each problem type such as number of problems, and selected status. 
+ * Type to represent the state variable problemTypesConfig, which contains config
+ * information for each problem type such as number of problems, and selected status.
  */
 type ProblemTypesConfig = {
   [key in ProblemType]: {
@@ -16,8 +16,8 @@ type ProblemTypesConfig = {
 };
 
 /**
- * 
- * @returns a base configuration for each problem type 
+ *
+ * @returns a base configuration for each problem type
  */
 const getBaseProblemTypesConfig = () => {
   let problemTypesConfig: ProblemTypesConfig = {
@@ -38,8 +38,8 @@ const getBaseProblemTypesConfig = () => {
 };
 
 /**
- * 
- * @param type 
+ *
+ * @param type
  * @returns a string representation of the provided problem type
  */
 const problemTypeToString = (type: ProblemType) => {
@@ -49,7 +49,7 @@ const problemTypeToString = (type: ProblemType) => {
     case ProblemType.MULTIPLE_CHOICE:
       return 'Multiple Choice';
     case ProblemType.FILL_IN_THE_BLANK:
-      return 'Fill In The Blank'
+      return 'Fill In The Blank';
   }
 };
 
@@ -92,10 +92,11 @@ const GenerationForm = (props: any) => {
    */
   const formHandler = (event: any) => {
     event.preventDefault();
-    const isReorderingSelected = problemTypesConfig[ProblemType.REORDER].selected;
+    const isReorderingSelected =
+      problemTypesConfig[ProblemType.REORDER].selected;
 
     const isMultipleChoiceSelected =
-    problemTypesConfig[ProblemType.MULTIPLE_CHOICE].selected;
+      problemTypesConfig[ProblemType.MULTIPLE_CHOICE].selected;
 
     if (!isReorderingSelected && !isMultipleChoiceSelected) {
       toast.error('At least one type of problem must be chosen.');
@@ -114,7 +115,7 @@ const GenerationForm = (props: any) => {
   };
 
   /**
-   * Toggles the selected status of the provided problem type in problemTypesConfig 
+   * Toggles the selected status of the provided problem type in problemTypesConfig
    * @param checked selected status
    * @param type problem type to toggle
    */
@@ -208,7 +209,9 @@ const GenerationForm = (props: any) => {
               data-testid="fill-in-the-blank-checkbox"
               name="isFillInTheBlank"
               type="checkbox"
-              checked={problemTypesConfig[ProblemType.FILL_IN_THE_BLANK].selected}
+              checked={
+                problemTypesConfig[ProblemType.FILL_IN_THE_BLANK].selected
+              }
               onChange={(event: { target: { checked: boolean } }) =>
                 toggleProblemType(
                   event.target.checked,
