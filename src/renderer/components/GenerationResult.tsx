@@ -148,7 +148,7 @@ const GenerationResult = (props: any) => {
       </div>
       {problemSet &&
         Array.from(problemsByType.keys()).map((problemType: ProblemType) => (
-          <div>
+          <div key={problemType}> 
             <h2 key={problemType}>{questionTypeTag(problemType) + ' Problems'}</h2>
             {problemType === ProblemType.REORDER && (
               <h3>Highlighted regions represent line tuples.</h3>
