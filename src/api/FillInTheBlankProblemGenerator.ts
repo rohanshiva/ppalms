@@ -80,30 +80,36 @@ export class FillInTheBlankProblemGenerator {
       .filter((token) => token.length > 0);
   }
 
-  private getQuestionFromTokens(tokens: string[]): string {
+  private getProblemFromTokens(tokens: string[]) {
     let blankedCode = this.code;
-    for (const token of tokens) {
+    let answersWithPositions = [];
+    for (let token of tokens) {
       if (this.stringLiteralMap.has(token)) {
         const replacementLength = (this.stringLiteralMap.get(token) as string)
           .length;
+        answersWithPositions.push({
+          content: this.stringLiteralMap.get(token),
+          position: blankedCode.match(token)?.index as number,
+        });
         blankedCode = blankedCode.replace(token, '_'.repeat(replacementLength));
       } else {
         const regex = new RegExp(
           `(?<!${this.STRING_LITERAL_REPLACEMENT_TOKEN})${token}`
         );
+        answersWithPositions.push({
+          content: token,
+          position: blankedCode.match(regex)?.index as number,
+        });
         blankedCode = blankedCode.replace(regex, '_'.repeat(token.length));
       }
     }
-    return this.fillLiteralStrings(blankedCode);
-  }
 
-  private getAnswerFromTokens(tokens: string[]): string[] {
-    return tokens.map((token) => {
-      if (this.stringLiteralMap.has(token)) {
-        return this.stringLiteralMap.get(token) as string;
-      }
-      return token;
-    });
+    answersWithPositions.sort((a, b) => a.position - b.position);
+
+    return {
+      question: this.fillLiteralStrings(blankedCode),
+      answer: answersWithPositions.map((ap) => ap.content) as string[],
+    };
   }
 
   /**
@@ -116,7 +122,7 @@ export class FillInTheBlankProblemGenerator {
       return [];
     }
     let problems = [];
-    const numOfBlanks = Math.floor(Math.log2(tokens.length) * 2);
+    const numOfBlanks = Math.floor(Math.log2(tokens.length));
     const combinationGenerator = new SequenceGenerator(
       tokens.length,
       numOfBlanks,
@@ -132,10 +138,7 @@ export class FillInTheBlankProblemGenerator {
       problems.push({
         id: `fill_in_the_blank-${problems.length}`,
         type: ProblemType.FILL_IN_THE_BLANK,
-        data: {
-          question: this.getQuestionFromTokens(selectedTokens),
-          answer: this.getAnswerFromTokens(selectedTokens),
-        },
+        data: this.getProblemFromTokens(selectedTokens),
       });
     }
     return problems;
