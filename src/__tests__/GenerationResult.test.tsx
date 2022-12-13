@@ -70,7 +70,7 @@ describe('GenerationResult', () => {
       [ProblemType.REORDER],
       sourceCode,
       lineTuples,
-      {0: 1} as any,
+      { 0: 1 } as any,
       'PSet Name'
     );
     render(
@@ -119,7 +119,7 @@ describe('GenerationResult', () => {
         { start: 1, end: 2 },
         { start: 3, end: 6 },
       ],
-      {0: 10} as any,
+      { 0: 10 } as any,
       'PSet Name'
     );
     render(
@@ -165,5 +165,28 @@ describe('GenerationResult', () => {
         });
       i += 1;
     }
+  });
+
+  test('render export button', async () => {
+    const mockProblemSetName = 'PSet Name';
+    const problemSet = ProblemSetGenerator.generate(
+      [ProblemType.REORDER],
+      sourceCode,
+      [
+        { start: 1, end: 2 },
+        { start: 3, end: 6 },
+      ],
+      { 0: 10 } as any,
+      mockProblemSetName
+    );
+    render(
+      <GenerationResult
+        {...wrapGenerationResultProps({
+          problemSet: problemSet,
+        })}
+      />
+    );
+
+    expect(screen.queryByTestId('export-btn')).toBeInTheDocument();
   });
 });
